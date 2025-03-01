@@ -11,7 +11,7 @@ use LaravelZero\Framework\Commands\Command;
 use League\Csv\Reader;
 use League\Csv\Writer;
 
-class AddProductFamilyFieldToCsv extends Command
+class AddProductFamilyField extends Command
 {
     use InteractsWithCsv;
     use InteractsWithDb;
@@ -31,7 +31,7 @@ class AddProductFamilyFieldToCsv extends Command
         $counter = 0;
 
         foreach (Family::all() as $family) {
-            $this->line('Processing family '.$counter);
+            $this->line('Processing family ' . $counter);
             if ($family->nombre_familia !== null) {
                 continue;
             }

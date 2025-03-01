@@ -9,14 +9,14 @@ use LaravelZero\Framework\Commands\Command;
 use League\Csv\Reader;
 use League\Csv\Writer;
 
-class ImproveCsvTextsWithAi extends Command
+class ImproveProductTextsWithAi extends Command
 {
     use InteractsWithCsv;
     use InteractsWithDb;
 
     protected $signature = 'u:improve-texts-with-ai';
 
-    protected $description = 'Process products csv with OpenAI to generate some texts';
+    protected $description = 'Process products with OpenAI to generate some fancy texts';
 
     private Reader $original_csv;
 
@@ -29,7 +29,7 @@ class ImproveCsvTextsWithAi extends Command
     public function handle(): int
     {
         $this->original_csv = $this->openCsvFileAsRead($this->argument('csv_file'));
-        $this->modified_csv = $this->openCsvFileAsWrite('processed_with_ai_'.$this->argument('csv_file'));
+        $this->modified_csv = $this->openCsvFileAsWrite('processed_with_ai_' . $this->argument('csv_file'));
 
         $this->modified_csv->insertOne($this->original_csv->getHeader());
 
@@ -39,13 +39,13 @@ class ImproveCsvTextsWithAi extends Command
 
             if ($family !== null && $family->processed_with_ai === true) {
                 $this->modified_csv->insertOne($record);
-                $this->line('Skipping product, it has already been processed. Database id: '.$product->id);
+                $this->line('Skipping product, it has already been processed. Database id: ' . $product->id);
 
                 continue;
             }
 
             try {
-                $this->line('Processing product with AI. Database id: '.$product->id);
+                $this->line('Processing product with AI. Database id: ' . $product->id);
                 $ai_provider = $this->aiProvider($record);
 
                 $record['descripcion_corta'] = $ai_provider->shortDescription();
@@ -57,9 +57,9 @@ class ImproveCsvTextsWithAi extends Command
 
                 $this->updateDbWithAiTexts($product, $record);
 
-                $this->info('Product successfully processed with AI. Database id: '.$product->id);
+                $this->info('Product successfully processed with AI. Database id: ' . $product->id);
             } catch (\Throwable $th) {
-                $this->error('Error procesing product with AI: '.$product->id.' : '.$th->getMessage());
+                $this->error('Error procesing product with AI: ' . $product->id . ' : ' . $th->getMessage());
                 $this->ai_failures++;
 
                 if ($this->ai_failures > $this->ai_failure_threshold) {
