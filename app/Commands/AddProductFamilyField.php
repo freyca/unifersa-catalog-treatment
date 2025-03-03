@@ -5,7 +5,6 @@ namespace App\Commands;
 use App\Commands\Traits\InteractsWithCsv;
 use App\Commands\Traits\InteractsWithDb;
 use App\Models\Family;
-use App\Services\CsvNormalizer\CsvNormalizerServiceProvider;
 use Illuminate\Support\Collection;
 use LaravelZero\Framework\Commands\Command;
 use League\Csv\Reader;
@@ -24,14 +23,12 @@ class AddProductFamilyField extends Command
 
     private Writer $modified_csv;
 
-    private CsvNormalizerServiceProvider $csv_normalizer;
-
     public function handle()
     {
         $counter = 0;
 
         foreach (Family::all() as $family) {
-            $this->line('Processing family '.$counter);
+            $this->line('Processing family ' . $counter);
             if ($family->nombre_familia !== null) {
                 continue;
             }

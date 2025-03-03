@@ -4,7 +4,7 @@ namespace App\Commands;
 
 use App\Commands\Traits\InteractsWithCsv;
 use App\Commands\Traits\InteractsWithDb;
-use App\Services\CsvNormalizer\CsvNormalizerServiceProvider;
+use App\Services\CsvNormalizer\CsvNormalizer;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
@@ -76,14 +76,14 @@ class DownloadUnifersaCsv extends Command
     private function normalizeCsvFields(string $csv_file_name): void
     {
         $original_csv = $this->openCsvFileAsRead($csv_file_name);
-        $csv_normalizer = app(CsvNormalizerServiceProvider::class);
+        $csv_normalizer = app(CsvNormalizer::class);
 
         $counter = 0;
         foreach ($original_csv as $record) {
             $record = $csv_normalizer->getNormalizedNames($record);
             $record = $this->addHeaderValuesToCsvRow($record, $this->new_headers_to_add_in_csv);
 
-            $this->line('Processing line '.$counter);
+            $this->line('Processing line ' . $counter);
 
             // This has no other purpouse than create the products in database
             // It allows us to process further data from db and not csv
@@ -114,7 +114,7 @@ class DownloadUnifersaCsv extends Command
 
     private function unzipFile(string $ftp_file_name): string
     {
-        $downloaded_ftp_file_name = storage_path('app/'.$ftp_file_name);
+        $downloaded_ftp_file_name = storage_path('app/' . $ftp_file_name);
 
         $zip = new ZipFile;
         $zip->openFile($downloaded_ftp_file_name);
