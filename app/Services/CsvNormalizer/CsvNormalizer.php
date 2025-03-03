@@ -2,7 +2,7 @@
 
 namespace App\Services\CsvNormalizer;
 
-interface CsvNormalizerServiceProvider
+interface CsvNormalizer
 {
     public function getNormalizedNames(array $foraneous_csv_keys_and_values): array;
 }

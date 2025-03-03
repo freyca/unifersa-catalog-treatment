@@ -2,7 +2,7 @@
 
 namespace App\Services\AI;
 
-interface AIServiceProvider
+interface AIService
 {
     public function __construct(string $description, string $features, string $family);
 

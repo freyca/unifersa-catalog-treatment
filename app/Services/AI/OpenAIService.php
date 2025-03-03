@@ -5,7 +5,7 @@ namespace App\Services\AI;
 use OpenAI;
 use OpenAI\Client;
 
-class OpenAIServiceProvider implements AIServiceProvider
+class OpenAIService implements AIService
 {
     private string $AI_model;
 

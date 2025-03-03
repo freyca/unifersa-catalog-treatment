@@ -2,7 +2,7 @@
 
 namespace App\Services\CsvNormalizer;
 
-class UnifersaCsvNormalizer implements CsvNormalizerServiceProvider
+class UnifersaCsvNormalizer implements CsvNormalizer
 {
     private array $name_equivalences =
         [

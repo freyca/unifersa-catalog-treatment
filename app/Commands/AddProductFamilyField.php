@@ -31,7 +31,7 @@ class AddProductFamilyField extends Command
         $counter = 0;
 
         foreach (Family::all() as $family) {
-            $this->line('Processing family ' . $counter);
+            $this->line('Processing family '.$counter);
             if ($family->nombre_familia !== null) {
                 continue;
             }
