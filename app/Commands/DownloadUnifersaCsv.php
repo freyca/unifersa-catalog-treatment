@@ -10,9 +10,9 @@ use App\Services\CsvNormalizer\ProductCsvNormalizer;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use LaravelZero\Framework\Commands\Command;
 use PhpZip\ZipFile;
-use Illuminate\Support\Str;
 
 class DownloadUnifersaCsv extends Command
 {
@@ -118,7 +118,6 @@ class DownloadUnifersaCsv extends Command
         $this->line('');
     }
 
-
     private function removeOldLocalFile(string $file_name): void
     {
         if (Storage::disk('local')->exists($file_name)) {
@@ -134,7 +133,7 @@ class DownloadUnifersaCsv extends Command
 
     private function unzipFile(string $ftp_file_name): string
     {
-        $downloaded_ftp_file_name = storage_path('app/' . $ftp_file_name);
+        $downloaded_ftp_file_name = storage_path('app/'.$ftp_file_name);
 
         $zip = new ZipFile;
         $zip->openFile($downloaded_ftp_file_name);

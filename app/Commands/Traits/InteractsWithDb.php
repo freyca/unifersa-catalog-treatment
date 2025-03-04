@@ -68,7 +68,7 @@ trait InteractsWithDb
             ->where('ean13', $query_array['ean13'])
             ->first();
 
-        if (!is_null($p)) {
+        if (! is_null($p)) {
             return $p->descatalogado = true;
         } else {
             return false;
