@@ -28,6 +28,7 @@
         "league/csv": "^9.0",
         "league/flysystem-ftp": "^3.0",
         "nelexa/zip": "^4.0",
+        "nunomaduro/laravel-console-menu": "^3.6",
         "openai-php/client": "^0.10.3",
         "usmanhalalit/laracsv": "^2.1"
     },
