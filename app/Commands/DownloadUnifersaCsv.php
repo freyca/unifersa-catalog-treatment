@@ -171,10 +171,10 @@ class DownloadUnifersaCsv extends Command
                 $family->products()->pluck('descripcion')
             );
 
-            $friendly_name = Str::apa($family_name);
-            $friendly_name = Str::deduplicate($friendly_name);
+            $friendly_name = Str::deduplicate($family_name);
             $friendly_name = Str::chopEnd($friendly_name, '-');
             $friendly_name = Str::replace('.', '. ', $friendly_name);
+            $friendly_name = Str::apa($family_name);
 
             $family->update([
                 'nombre_familia' => $family_name,
