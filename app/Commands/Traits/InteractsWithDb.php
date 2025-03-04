@@ -48,20 +48,4 @@ trait InteractsWithDb
 
         return Family::firstOrCreate($query_array);
     }
-
-    private function updateDbWithAiTexts(Product $product, array $record): void
-    {
-        $family = $product->family;
-
-        if ($family === null) {
-            $family = $this->searchFamilyInDb($record);
-        }
-
-        $record['processed_with_ai'] = true;
-        $family->update($record);
-
-        $product->update([
-            'family_id' => $family->id,
-        ]);
-    }
 }

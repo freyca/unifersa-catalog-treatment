@@ -20,10 +20,16 @@ class Product extends Model
         'imagen',
         'caracteristicas',
         'family_id',
+        'ai_texts_id',
     ];
 
     public function family(): BelongsTo
     {
         return $this->belongsTo(Family::class);
+    }
+
+    public function aiTexts(): BelongsTo
+    {
+        return $this->belongsTo(AiTexts::class);
     }
 }

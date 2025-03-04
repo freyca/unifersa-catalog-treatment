@@ -4,7 +4,9 @@ namespace App\Commands;
 
 use App\Commands\Traits\InteractsWithCsv;
 use App\Commands\Traits\InteractsWithDb;
-use App\Services\AI\AIServiceProvider;
+use App\Models\AiTexts;
+use App\Models\Product;
+use App\Services\AI\AIService;
 use LaravelZero\Framework\Commands\Command;
 use League\Csv\Reader;
 use League\Csv\Writer;
@@ -28,38 +30,44 @@ class ImproveProductTextsWithAi extends Command
 
     public function handle(): int
     {
-        $this->original_csv = $this->openCsvFileAsRead($this->argument('csv_file'));
-        $this->modified_csv = $this->openCsvFileAsWrite('processed_with_ai_'.$this->argument('csv_file'));
+        $products = Product::all();
 
-        $this->modified_csv->insertOne($this->original_csv->getHeader());
+        foreach ($products as $product) {
+            // This is for products with a family
+            if ($product->family->processed_with_ai === true) {
+                $product->ai_texts_id = $product->family->products()->first()->ai_texts_id;
+                $product->save();
 
-        foreach ($this->original_csv as $record) {
-            $product = $this->searchProductInDb($record);
-            $family = $this->searchFamilyInDb($record);
-
-            if ($family !== null && $family->processed_with_ai === true) {
-                $this->modified_csv->insertOne($record);
-                $this->line('Skipping product, it has already been processed. Database id: '.$product->id);
+                $this->line('Skipping product, it has already been processed. Database id: ' . $product->id);
 
                 continue;
             }
 
             try {
-                $this->line('Processing product with AI. Database id: '.$product->id);
-                $ai_provider = $this->aiProvider($record);
+                $this->line('Processing product with AI. Database id: ' . $product->id);
+                $ai_provider = $this->aiProvider($product);
 
-                $record['descripcion_corta'] = $ai_provider->shortDescription();
-                $record['descripcion_larga'] = $ai_provider->longDescription();
-                $record['meta_titulo'] = $ai_provider->metaTitle();
-                $record['meta_descripcion'] = $ai_provider->metaDescription();
+                $ai_db_row = AiTexts::create([
+                    'descripcion_corta' => $ai_provider->shortDescription(),
+                    'descripcion_larga' => $ai_provider->longDescription(),
+                    'meta_titulo' => $ai_provider->metaTitle(),
+                    'meta_descripcion' => $ai_provider->metaDescription(),
+                ]);
 
-                $this->modified_csv->insertOne($record);
+                $product->ai_texts_id = $ai_db_row->id;
+                $product->save();
 
-                $this->updateDbWithAiTexts($product, $record);
+                $product->family->processed_with_ai = true;
+                $product->family->save();
 
-                $this->info('Product successfully processed with AI. Database id: '.$product->id);
+                foreach ($product->family->products as $related_product) {
+                    $related_product->ai_texts_id = $product->ai_texts_id;
+                    $related_product->save();
+                }
+
+                $this->info('Product successfully processed with AI. Database id: ' . $product->id);
             } catch (\Throwable $th) {
-                $this->error('Error procesing product with AI: '.$product->id.' : '.$th->getMessage());
+                $this->error('Error procesing product with AI: ' . $product->id . ' : ' . $th->getMessage());
                 $this->ai_failures++;
 
                 if ($this->ai_failures > $this->ai_failure_threshold) {
@@ -73,14 +81,14 @@ class ImproveProductTextsWithAi extends Command
         return self::SUCCESS;
     }
 
-    private function aiProvider(array $record): AIServiceProvider
+    private function aiProvider(Product $product): AIService
     {
         $ai_provider = app(
-            AIServiceProvider::class,
+            AIService::class,
             [
-                'description' => $record['descripcion'],
-                'features' => $record['caracteristicas'],
-                'family' => $record['familia'],
+                'description' => $product->descripcion,
+                'features' => $product->caracteristicas,
+                'family' => $product->familia,
             ]
         );
 
