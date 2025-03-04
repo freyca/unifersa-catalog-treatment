@@ -8,7 +8,7 @@ use App\Models\Family;
 use App\Services\CsvNormalizer\DiscountinuedCsvNormalizer;
 use App\Services\CsvNormalizer\ProductCsvNormalizer;
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
 use PhpZip\ZipFile;
@@ -41,17 +41,14 @@ class DownloadUnifersaCsv extends Command
         // Seeding database with product csv
         $this->line('Starting field normalization and inserting in database');
         $this->normalizeProductCsvFieldsAndAddToDb('productos.csv');
-        $this->info('Job done');
 
         // Marking as discontinued products in discontinued csv
         $this->line('Marking products as discontinued');
         $this->normalizeDiscontinuedCsvFieldsAndAddToDb('descatalogados.csv');
-        $this->info('Finished');
 
         // Generates family name for products
         $this->line('Generating family names');
         $this->generateFamilyName();
-        $this->info('Family names generated');
 
         return self::SUCCESS;
     }
@@ -80,21 +77,17 @@ class DownloadUnifersaCsv extends Command
         $original_csv = $this->openCsvFileAsRead($csv_file_name);
         $csv_normalizer = app(DiscountinuedCsvNormalizer::class);
 
-        $counter = 0;
+        $progressbar = $this->output->createProgressBar($original_csv->count());
+        $progressbar->start();
+
         foreach ($original_csv as $record) {
             $record = $csv_normalizer->getNormalizedNames($record);
-
-            $this->line('Processing line ' . $counter);
-
-            // This has no other purpouse than create the products in database
-            // It allows us to process further data from db and not csv
-            // IMPORTANT: Needs to be done after the normalization
-            if (! $this->markProductAsDiscontinued($record)) {
-                $this->line('Product not find to mark as discontinued ' . json_encode($record));
-            }
-
-            $counter++;
+            $this->markProductAsDiscontinued($record);
+            $progressbar->advance();
         }
+
+        $progressbar->finish();
+        $this->line('');
     }
 
     private function normalizeProductCsvFieldsAndAddToDb(string $csv_file_name): void
@@ -102,11 +95,11 @@ class DownloadUnifersaCsv extends Command
         $original_csv = $this->openCsvFileAsRead($csv_file_name);
         $csv_normalizer = app(ProductCsvNormalizer::class);
 
-        $counter = 0;
+        $progressbar = $this->output->createProgressBar($original_csv->count());
+        $progressbar->start();
+
         foreach ($original_csv as $record) {
             $record = $csv_normalizer->getNormalizedNames($record);
-
-            $this->line('Processing line ' . $counter);
 
             // This has no other purpouse than create the products in database
             // It allows us to process further data from db and not csv
@@ -118,8 +111,11 @@ class DownloadUnifersaCsv extends Command
                 $product->update(['family_id' => $family->id]);
             }
 
-            $counter++;
+            $progressbar->advance();
         }
+
+        $progressbar->finish();
+        $this->line('');
     }
 
 
@@ -159,11 +155,10 @@ class DownloadUnifersaCsv extends Command
 
     public function generateFamilyName()
     {
-        $counter = 0;
+        $progressbar = $this->output->createProgressBar(Family::count());
+        $progressbar->start();
 
         foreach (Family::all() as $family) {
-            $this->line('Processing family ' . $counter);
-
             $family_name = $family->nombre_familia;
 
             if ($family_name === null) {
@@ -186,10 +181,11 @@ class DownloadUnifersaCsv extends Command
                 'nombre_manual' => $friendly_name,
             ]);
 
-            $counter++;
+            $progressbar->advance();
         }
 
-        $this->info('Job done');
+        $progressbar->finish();
+        $this->line('');
     }
 
     private function getEqualPartInProductName(Collection $names): string
