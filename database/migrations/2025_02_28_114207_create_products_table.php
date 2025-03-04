@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->boolean('descatalogado')->default(false)->index();
             $table->string('ean13')->nullable()->index();
             $table->string('codigo_articulo')->nullable()->index();
             $table->string('referencia_proveedor')->nullable()->index();

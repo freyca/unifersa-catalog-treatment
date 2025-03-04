@@ -4,7 +4,8 @@ namespace App\Commands;
 
 use App\Commands\Traits\InteractsWithCsv;
 use App\Commands\Traits\InteractsWithDb;
-use App\Services\CsvNormalizer\CsvNormalizer;
+use App\Services\CsvNormalizer\DiscountinuedCsvNormalizer;
+use App\Services\CsvNormalizer\ProductCsvNormalizer;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
@@ -21,15 +22,6 @@ class DownloadUnifersaCsv extends Command
 
     private array $files_to_download_with_its_final_names;
 
-    private array $new_headers_to_add_in_csv = [
-        'id_familia',
-        'nombre_familia',
-        'descripcion_corta',
-        'descripcion_larga',
-        'meta_titulo',
-        'meta_descripcion',
-    ];
-
     public function schedule(Schedule $schedule): void
     {
         $schedule->command(static::class)->cron('0 2 * * *');
@@ -37,19 +29,21 @@ class DownloadUnifersaCsv extends Command
 
     public function handle()
     {
+        // File downloading
         $this->line('Starting download');
-
         $this->files_to_download_with_its_final_names = config('custom.files_to_download_with_its_final_names');
-
         $this->downloadFiles();
-
         $this->info('Files downloades successfully');
 
+        // Seeding database with product csv
         $this->line('Starting field normalization and inserting in database');
-
-        $this->normalizeCsvFields('productos.csv');
-
+        $this->normalizeProductCsvFieldsAndAddToDb('productos.csv');
         $this->info('Job done');
+
+        // Marking as discontinued products in discontinued csv
+        $this->line('Marking products as discontinued');
+        $this->normalizeDiscontinuedCsvFieldsAndAddToDb('descatalogados.csv');
+        $this->info('Finished');
 
         return self::SUCCESS;
     }
@@ -73,15 +67,36 @@ class DownloadUnifersaCsv extends Command
         }
     }
 
-    private function normalizeCsvFields(string $csv_file_name): void
+    private function normalizeDiscontinuedCsvFieldsAndAddToDb(string $csv_file_name): void
     {
         $original_csv = $this->openCsvFileAsRead($csv_file_name);
-        $csv_normalizer = app(CsvNormalizer::class);
+        $csv_normalizer = app(DiscountinuedCsvNormalizer::class);
 
         $counter = 0;
         foreach ($original_csv as $record) {
             $record = $csv_normalizer->getNormalizedNames($record);
-            $record = $this->addHeaderValuesToCsvRow($record, $this->new_headers_to_add_in_csv);
+
+            $this->line('Processing line ' . $counter);
+
+            // This has no other purpouse than create the products in database
+            // It allows us to process further data from db and not csv
+            // IMPORTANT: Needs to be done after the normalization
+            if (! $this->markProductAsDiscontinued($record)) {
+                $this->line('Product not find to mark as discontinued ' . json_encode($record));
+            }
+
+            $counter++;
+        }
+    }
+
+    private function normalizeProductCsvFieldsAndAddToDb(string $csv_file_name): void
+    {
+        $original_csv = $this->openCsvFileAsRead($csv_file_name);
+        $csv_normalizer = app(ProductCsvNormalizer::class);
+
+        $counter = 0;
+        foreach ($original_csv as $record) {
+            $record = $csv_normalizer->getNormalizedNames($record);
 
             $this->line('Processing line ' . $counter);
 
@@ -98,6 +113,7 @@ class DownloadUnifersaCsv extends Command
             $counter++;
         }
     }
+
 
     private function removeOldLocalFile(string $file_name): void
     {

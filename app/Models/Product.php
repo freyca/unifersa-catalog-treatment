@@ -21,7 +21,15 @@ class Product extends Model
         'caracteristicas',
         'family_id',
         'ai_texts_id',
+        'descatalogado',
     ];
+
+    public function casts()
+    {
+        return [
+            'descatalogado' => 'boolean',
+        ];
+    }
 
     public function family(): BelongsTo
     {

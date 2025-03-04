@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('caracteristicas')->nullable();
             $table->string('nombre_familia')->nullable();
             $table->boolean('processed_with_ai')->default(false);
+            $table->boolean('needs_manual_revision')->default(true);
             $table->timestamps();
         });
 
@@ -35,7 +36,6 @@ return new class extends Migration
             'marca_comercial' => 'xxxxxxxxxxx',
             'caracteristicas' => 'xxxxxxxxxxx',
             'nombre_familia' => 'xxxxxxxxxxx',
-            'processed_with_ai' => false,
         ]);
     }
 
