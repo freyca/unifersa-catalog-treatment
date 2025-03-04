@@ -12,17 +12,18 @@ class Family extends Model
         'marca_comercial',
         'caracteristicas',
         'nombre_familia',
-        'processed_with_ai',
+        'procesado_con_ia',
         'descripcion_corta',
         'descripcion_larga',
         'meta_titulo',
         'meta_descripcion',
+        'necesita_revision_manual',
     ];
 
     protected function casts(): array
     {
         return [
-            'processed_with_ai' => 'boolean',
+            'procesado_con_ia' => 'boolean',
         ];
     }
 

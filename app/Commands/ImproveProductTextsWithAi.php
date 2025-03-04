@@ -34,7 +34,7 @@ class ImproveProductTextsWithAi extends Command
 
         foreach ($products as $product) {
             // This is for products with a family
-            if ($product->family->processed_with_ai === true) {
+            if ($product->family->procesado_con_ia === true) {
                 $product->ai_texts_id = $product->family->products()->first()->ai_texts_id;
                 $product->save();
 
@@ -57,7 +57,7 @@ class ImproveProductTextsWithAi extends Command
                 $product->ai_texts_id = $ai_db_row->id;
                 $product->save();
 
-                $product->family->processed_with_ai = true;
+                $product->family->procesado_con_ia = true;
                 $product->family->save();
 
                 foreach ($product->family->products as $related_product) {

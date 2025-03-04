@@ -33,7 +33,7 @@ class ExportDbToCsv extends Command
         'codigo_proveedor',
         'marca_comercial',
         'caracteristicas',
-        'processed_with_ai',
+        'procesado_con_ia',
     ];
 
     private string $export_file_name;
@@ -49,7 +49,7 @@ class ExportDbToCsv extends Command
 
         $csvExporter->build(Product::all(), array_merge($product_export_fileds, $family_export_fields));
 
-        $this->info('File succesfylly exported: '.storage_path('app/'.config('custom.export_file_name')));
+        $this->info('File succesfylly exported: ' . storage_path('app/' . config('custom.export_file_name')));
 
         $csvExporter->getWriter()->toString();
 
@@ -66,7 +66,7 @@ class ExportDbToCsv extends Command
         }
 
         foreach ($family_export_fields as $key => $value) {
-            $family_export_fields[$key] = $prefix === '' ? $value : $prefix.'.'.$value;
+            $family_export_fields[$key] = $prefix === '' ? $value : $prefix . '.' . $value;
         }
 
         return $family_export_fields;
