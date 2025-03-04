@@ -163,18 +163,23 @@ class DownloadUnifersaCsv extends Command
 
         foreach (Family::all() as $family) {
             $this->line('Processing family ' . $counter);
-            if ($family->nombre_familia !== null) {
-                continue;
+
+            $family_name = $family->nombre_familia;
+
+            if ($family_name === null) {
+                $family_name = $this->getEqualPartInProductName(
+                    $family->products()->pluck('descripcion')
+                );
             }
 
-            $family_name = $this->getEqualPartInProductName(
-                $family->products()->pluck('descripcion')
-            );
+            $friendly_name = $family->nombre_manual;
 
-            $friendly_name = Str::deduplicate($family_name);
-            $friendly_name = Str::chopEnd($friendly_name, '-');
-            $friendly_name = Str::replace('.', '. ', $friendly_name);
-            $friendly_name = Str::apa($family_name);
+            if ($friendly_name === null) {
+                $friendly_name = Str::deduplicate($family_name);
+                $friendly_name = Str::chopEnd($friendly_name, '-');
+                $friendly_name = Str::replace('.', '. ', $friendly_name);
+                $friendly_name = Str::apa($friendly_name);
+            }
 
             $family->update([
                 'nombre_familia' => $family_name,
