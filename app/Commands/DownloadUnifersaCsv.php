@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
 use PhpZip\ZipFile;
+use Illuminate\Support\Str;
 
 class DownloadUnifersaCsv extends Command
 {
@@ -170,8 +171,14 @@ class DownloadUnifersaCsv extends Command
                 $family->products()->pluck('descripcion')
             );
 
+            $friendly_name = Str::apa($family_name);
+            $friendly_name = Str::deduplicate($friendly_name);
+            $friendly_name = Str::chopEnd($friendly_name, '-');
+            $friendly_name = Str::replace('.', '. ', $friendly_name);
+
             $family->update([
                 'nombre_familia' => $family_name,
+                'nombre_manual' => $friendly_name,
             ]);
 
             $counter++;

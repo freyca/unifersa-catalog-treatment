@@ -18,6 +18,7 @@ class Family extends Model
         'meta_titulo',
         'meta_descripcion',
         'necesita_revision_manual',
+        'nombre_manual',
     ];
 
     protected function casts(): array
