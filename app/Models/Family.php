@@ -24,6 +24,7 @@ class Family extends Model
     {
         return [
             'procesado_con_ia' => 'boolean',
+            'necesita_revision_manual' => 'boolean',
         ];
     }
 
