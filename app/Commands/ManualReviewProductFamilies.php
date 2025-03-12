@@ -19,9 +19,18 @@ class ManualReviewProductFamilies extends Command
             $this->analise_families_with_one_product = true;
         }
 
+        $first_family_id = 0;
+        if ($this->confirm('Want to skip to family with ID X?')) {
+            $first_family_id = $this->ask('Enter the family id');
+        }
+
         foreach (Family::all() as $family) {
             // Family id 1 is the box for products without family
             if ($family->id === 1) {
+                continue;
+            }
+
+            if ($family->id < $first_family_id) {
                 continue;
             }
 
@@ -53,6 +62,7 @@ class ManualReviewProductFamilies extends Command
         $counter = 0;
         foreach ($products as $product) {
             $this->line($counter . ' - ' . $product->descripcion);
+            $counter++;
         }
 
         if ($this->confirm('Is everything ok?')) {
@@ -67,10 +77,14 @@ class ManualReviewProductFamilies extends Command
             'Assign family name manually',
             'Search a better family for product(s)',
             'Assign to family with id 0',
-        ])->open();
+        ])->setTitle('UNIFERSA catalog treatment options')
+            ->addLineBreak('-')
+            ->setForegroundColour('green')
+            ->setBackgroundColour('black')
+            ->open();
 
         match ($option) {
-            0 => $this->splitProductsInSeparateFamilies(),
+            0 => $this->splitProductsInSeparateFamilies($products),
             1 => $this->assignFamilyNameManually($family),
             2 => $this->searchABetterFamily($products),
             3 => $this->assignToFamilyWithId0($products),
@@ -85,6 +99,10 @@ class ManualReviewProductFamilies extends Command
 
     private function assignFamilyNameManually(Family $family): void
     {
+        foreach ($family->products as $product) {
+            $this->line($product->descripcion);
+        }
+
         $this->line('Previous name: ' . $family->nombre_manual);
         $name = $this->ask('Give the name');
 
@@ -103,23 +121,41 @@ class ManualReviewProductFamilies extends Command
 
     private function searchABetterFamily($products): void
     {
-        while ($this->confirm('Want to search a family which could match?')) {
-            $search_term = $this->ask('Give search query');
-
-            $found_families = Family::where('nombre_familia', 'like', "%{$search_term}%")->get();
-
-            foreach ($found_families as $family) {
-                $this->line($family->id . ' - ' . $family->nombre_familia);
+        $counter = 0;
+        foreach ($products as $product) {
+            if ($counter === 0) {
+                $this->line($product->family->nombre_familia);
+                $counter++;
             }
 
-            if ($this->confirm('Is any of this families suitable for the product(s)?')) {
-                $family_id = $this->ask('Give the family id -number before the name-');
-
-                foreach ($products as $product) {
-                    $product->family_id = intval($family_id);
-                    $product->save();
-                }
-            }
+            $this->line($product->descripcion);
         }
+        $this->line('----------------');
+
+        $search_term = $this->ask('Give search query');
+
+        $found_families = Family::where('nombre_familia', 'like', "%{$search_term}%")->get();
+
+        foreach ($found_families as $family) {
+            $this->line($family->id . ' - ' . $family->nombre_familia);
+            foreach ($family->products as $product) {
+                $this->line($product->descripcion);
+            }
+
+            $this->line('---------------');
+        }
+
+        if ($this->confirm('Is any of this families suitable for the product(s)?')) {
+            $family_id = $this->ask('Give the family id -number before the name-');
+
+            foreach ($products as $product) {
+                $product->family_id = intval($family_id);
+                $product->save();
+            }
+
+            return;
+        }
+
+        $this->searchABetterFamily($family);
     }
 }
