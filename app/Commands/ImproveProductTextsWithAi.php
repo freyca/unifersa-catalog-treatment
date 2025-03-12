@@ -13,16 +13,11 @@ use League\Csv\Writer;
 
 class ImproveProductTextsWithAi extends Command
 {
-    use InteractsWithCsv;
     use InteractsWithDb;
 
     protected $signature = 'u:improve-texts-with-ai';
 
     protected $description = 'Process products with OpenAI to generate some fancy texts';
-
-    private Reader $original_csv;
-
-    private Writer $modified_csv;
 
     private int $ai_failures = 0;
 
@@ -33,18 +28,22 @@ class ImproveProductTextsWithAi extends Command
         $products = Product::all();
 
         foreach ($products as $product) {
+            if ($product->family->necesita_revision_manual !== true) {
+                continue;
+            }
+
             // This is for products with a family
             if ($product->family->procesado_con_ia === true) {
                 $product->ai_texts_id = $product->family->products()->first()->ai_texts_id;
                 $product->save();
 
-                $this->line('Skipping product, it has already been processed. Database id: '.$product->id);
+                $this->line('Skipping product, it has already been processed. Database id: ' . $product->id);
 
                 continue;
             }
 
             try {
-                $this->line('Processing product with AI. Database id: '.$product->id);
+                $this->line('Processing product with AI. Database id: ' . $product->id);
                 $ai_provider = $this->aiProvider($product);
 
                 $ai_db_row = AiTexts::create([
@@ -65,9 +64,9 @@ class ImproveProductTextsWithAi extends Command
                     $related_product->save();
                 }
 
-                $this->info('Product successfully processed with AI. Database id: '.$product->id);
+                $this->info('Product successfully processed with AI. Database id: ' . $product->id);
             } catch (\Throwable $th) {
-                $this->error('Error procesing product with AI: '.$product->id.' : '.$th->getMessage());
+                $this->error('Error procesing product with AI: ' . $product->id . ' : ' . $th->getMessage());
                 $this->ai_failures++;
 
                 if ($this->ai_failures > $this->ai_failure_threshold) {
