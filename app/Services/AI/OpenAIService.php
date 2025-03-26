@@ -27,6 +27,7 @@ class OpenAIService implements AIService
         'La salida debe ser proporcionada sin saltos de línea. '.
         'Los párrafos deben ir en una etiqueta "p". '.
         'Si usas etiquetas "h" adicionales a la solicitada deben ser "h5". '.
+        'No utilices la etiqueta <html> ni <body>. '.
         'Cíñete a los datos proporcionados, los textos que proporciones se incrustarán en una web sin supervisión. '.
         'No incluyas nada extra a lo que se ha solicitado. ';
 
@@ -37,7 +38,6 @@ class OpenAIService implements AIService
         'Pon espacios entre los iconos y las letras. '.
         'No incluyas saltos de línea. '.
         'No formatees en markdown, solo texto. '.
-        'No utilices la etiqueta <html> ni <body>. '.
         'No incluyas nada extra a lo que se ha solicitado. ';
 
     private string $short_description_prompt = 'Con los datos proporcionados haz una descripción corta del producto que consista exactamente en: '.
