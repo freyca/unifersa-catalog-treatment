@@ -37,6 +37,7 @@ class OpenAIService implements AIService
         'Pon espacios entre los iconos y las letras. '.
         'No incluyas saltos de línea. '.
         'No formatees en markdown, solo texto. '.
+        'No utilices la etiqueta <html> ni <body>. '.
         'No incluyas nada extra a lo que se ha solicitado. ';
 
     private string $short_description_prompt = 'Con los datos proporcionados haz una descripción corta del producto que consista exactamente en: '.
