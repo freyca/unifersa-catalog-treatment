@@ -85,7 +85,7 @@ class DownloadUnifersaCsv extends Command
         $local_files = Storage::disk('local')->files();
 
         foreach ($this->files_to_download_with_its_final_names as $ftp_name => $downloaded_name) {
-            $matches = preg_grep('/'.$ftp_name.'/', $local_files);
+            $matches = preg_grep('/' . $ftp_name . '/', $local_files);
 
             if (count($matches) !== 0) {
                 Storage::disk('local')->move(array_pop($matches), $downloaded_name);
@@ -145,6 +145,7 @@ class DownloadUnifersaCsv extends Command
 
         foreach ($original_csv as $record) {
             $record = $csv_normalizer->getNormalizedNames($record);
+            $record['nombre_producto'] = ucfirst(strtolower($record['nombre_producto']));
 
             // This has no other purpouse than create the products in database
             // It allows us to process further data from db and not csv
@@ -201,7 +202,7 @@ class DownloadUnifersaCsv extends Command
 
     private function unzipFile(string $ftp_file_name): void
     {
-        $downloaded_ftp_file_name = storage_path('app/'.$ftp_file_name);
+        $downloaded_ftp_file_name = storage_path('app/' . $ftp_file_name);
 
         $zip = new ZipFile;
         $zip->openFile($downloaded_ftp_file_name);
