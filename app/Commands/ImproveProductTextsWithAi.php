@@ -38,6 +38,12 @@ class ImproveProductTextsWithAi extends Command
                 $this->line('Processing product with AI. Database id: '.$product->id);
                 $ai_provider = $this->aiProvider($product);
 
+                if (is_null($ai_provider)) {
+                    $this->line('Cannot process product. Null parameters: '.$product->id);
+
+                    continue;
+                }
+
                 $ai_db_row = AiTexts::create([
                     'descripcion_corta' => $ai_provider->shortDescription(),
                     'descripcion_larga' => $ai_provider->longDescription(),
@@ -64,8 +70,17 @@ class ImproveProductTextsWithAi extends Command
         return self::SUCCESS;
     }
 
-    private function aiProvider(Product $product): AIService
+    private function aiProvider(Product $product): ?AIService
     {
+        if (
+            is_null($product->nombre_producto) ||
+            is_null($product->modelo_producto) ||
+            is_null($product->caracteristicas) ||
+            is_null($product->familia)
+        ) {
+            return null;
+        }
+
         $ai_provider = app(
             AIService::class,
             [
