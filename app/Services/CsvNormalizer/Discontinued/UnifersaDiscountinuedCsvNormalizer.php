@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Services\CsvNormalizer;
+namespace App\Services\CsvNormalizer\Discontinued;
 
-class UnifersaDiscountinuedCsvNormalizer extends AbstractCsvNormalizer implements ProductCsvNormalizer
+use App\Services\CsvNormalizer\AbstractCsvNormalizer;
+
+class UnifersaDiscountinuedCsvNormalizer extends AbstractCsvNormalizer implements DiscountinuedCsvNormalizer
 {
     protected array $name_equivalences =
         [

@@ -8,17 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Family extends Model
 {
     protected $fillable = [
-        'codigo_proveedor',
-        'marca_comercial',
-        'caracteristicas',
-        'nombre_familia',
-        'procesado_con_ia',
-        'descripcion_corta',
-        'descripcion_larga',
-        'meta_titulo',
-        'meta_descripcion',
-        'necesita_revision_manual',
-        'nombre_manual',
+        'codigo_familia',
+        'descripcion',
+        'codigo_padre',
     ];
 
     protected function casts(): array

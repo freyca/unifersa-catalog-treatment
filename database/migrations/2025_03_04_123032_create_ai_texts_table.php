@@ -19,10 +19,6 @@ return new class extends Migration
             $table->longText('descripcion_larga')->nullable();
             $table->timestamps();
         });
-
-        Schema::table('products', function (Blueprint $table) {
-            $table->integer('ai_texts_id')->nullable()->references('id')->on('ai_texts')->constrained();
-        });
     }
 
     /**

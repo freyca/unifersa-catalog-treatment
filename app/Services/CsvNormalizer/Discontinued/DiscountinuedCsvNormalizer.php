@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\CsvNormalizer;
+namespace App\Services\CsvNormalizer\Discontinued;
 
-interface ProductCsvNormalizer
+interface DiscountinuedCsvNormalizer
 {
     public function getNormalizedNames(array $foraneous_csv_keys_and_values): array;
 }

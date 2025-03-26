@@ -4,6 +4,8 @@ namespace App\Services\CsvNormalizer;
 
 abstract class AbstractCsvNormalizer
 {
+    protected array $name_equivalences;
+
     public function getNormalizedHeader(array $foraneous_csv_header): array
     {
         $normalized_data = [];
@@ -30,9 +32,13 @@ abstract class AbstractCsvNormalizer
                 continue;
             }
 
-            $normalized_name = $this->name_equivalences[$this->trimCommas($key)];
+            try {
+                $normalized_name = $this->name_equivalences[$this->trimCommas($key)];
+            } catch (\Throwable $th) {
+                throw $th;
+            }
 
-            $normalized_data[$normalized_name] = $this->trimCommas($value);
+            $normalized_data[$normalized_name] = $this->trimCommas($value ?: '');
         }
 
         return $normalized_data;

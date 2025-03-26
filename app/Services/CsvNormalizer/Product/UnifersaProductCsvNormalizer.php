@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Services\CsvNormalizer;
+namespace App\Services\CsvNormalizer\Product;
+
+use App\Services\CsvNormalizer\AbstractCsvNormalizer;
 
 class UnifersaProductCsvNormalizer extends AbstractCsvNormalizer implements ProductCsvNormalizer
 {
@@ -18,7 +20,6 @@ class UnifersaProductCsvNormalizer extends AbstractCsvNormalizer implements Prod
             'DESC_UND_FRA' => 'descripcion_formato_venta',
             'UNDS_FRA' => 'unidades_formato_venta',
             'UND_MIN_VTA' => 'unidad_minima_venta',
-            'PESO_UND_MIN_VTA' => 'peso_unidad_minima_venta',
             'PVP' => 'precio_venta',
             'STOCK_DISPO' => 'stock',
             'IMAGEN' => 'imagen',
@@ -28,5 +29,10 @@ class UnifersaProductCsvNormalizer extends AbstractCsvNormalizer implements Prod
             'PESO_ESPECIAL' => 'peso_especial',
             'ADR_ESPECIAL' => 'agreement_dangerous_road_especial',
             'LOGISTICA_ESPECIAL' => 'logistica_especial',
+            'PESO_UND_MIN_VTA' => 'peso_unidad_minima_venta',
+            'TIPO_IVA' => 'tipo_iva',
+            'AGRUPA_DESCRIPCION' => 'nombre_producto',
+            'AGRUPA_MODELO' => 'modelo_producto',
+            'AGRUPA_MEDIDAS' => 'nombre_variante',
         ];
 }

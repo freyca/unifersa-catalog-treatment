@@ -19,9 +19,11 @@ class Product extends Model
         'stock',
         'imagen',
         'caracteristicas',
-        'family_id',
-        'ai_texts_id',
+        'nombre_producto',
+        'modelo_producto',
+        'nombre_variante',
         'descatalogado',
+        'family_id',
     ];
 
     public function casts()

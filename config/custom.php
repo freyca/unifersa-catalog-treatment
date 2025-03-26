@@ -17,12 +17,21 @@ return [
     |--------------------------------------------------------------------------
     */
 
+    'files_to_download' => [
+        'base.zip',
+        'UNIFERSA_ES_v3.0_SOC_BASE_ARTICULOS.csv',
+        'UNIFERSA_ES_v3.0_SOC_BASE_VARIANTES.txt',
+        'UNIFERSA_ES_SOC_BASE_DESCATALOGADOS.csv',
+    ],
+
     /**
      * Files to download from the Unifersa FTP
      */
     'files_to_download_with_its_final_names' => [
-        'base_csv_v2.0.zip' => 'productos.csv',
+        'UNIFERSA_ES_v3.0_SOC_BASE_ARTICULOS.csv' => 'productos.csv',
+        'UNIFERSA_ES_v3.0_SOC_BASE_VARIANTES.txt' => 'variantes.csv',
         'UNIFERSA_ES_SOC_BASE_DESCATALOGADOS.csv' => 'descatalogados.csv',
+        'UNIFERSA_SOC_BASE_FAMILIAS_*' => 'familias.csv',
     ],
 
     /**

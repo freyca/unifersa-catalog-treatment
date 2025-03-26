@@ -25,6 +25,9 @@ return new class extends Migration
             $table->string('familia')->nullable();
             $table->string('imagen')->nullable();
             $table->text('caracteristicas')->nullable();
+            $table->string('nombre_producto')->nullable();
+            $table->string('modelo_producto')->nullable();
+            $table->string('nombre_variante')->nullable();
             $table->timestamps();
         });
     }
