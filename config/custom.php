@@ -37,6 +37,10 @@ return [
     /**
      * Export file name
      */
-    'export_file_name' => 'unifersa.csv',
+    'export_file_names' => [
+        'productos' => 'productos-procesados.csv',
+        'ai_texts' => 'textos-con-ia.csv',
+        'variantes' => 'variantes-procesadas.csv',
+    ],
 
 ];
