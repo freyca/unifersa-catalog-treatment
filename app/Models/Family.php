@@ -11,6 +11,7 @@ class Family extends Model
         'codigo_familia',
         'descripcion',
         'codigo_padre',
+        'nombre_variantes',
     ];
 
     protected function casts(): array

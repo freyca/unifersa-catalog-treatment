@@ -26,14 +26,14 @@ class ExportDbToCsv extends Command
         'codigo_articulo',
         'nombre',
         'modelo',
+        'variantes',
+        'precio_venta',
         'imagen',
         'familia',
         'meta_titulo',
         'meta_descripcion',
         'descripcion_corta',
         'descripcion_larga',
-        'variante',
-        'precio_venta',
     ];
 
     /**
@@ -58,6 +58,7 @@ class ExportDbToCsv extends Command
             $model = Str::apa($variant->modelo_producto);
             $image = null;
             $family = null;
+            $variantes = $variant->codigos_articulos;
 
             $texts = AiTexts::find($variant->ai_texts_id);
 
@@ -91,14 +92,14 @@ class ExportDbToCsv extends Command
                     $product_code,
                     $name,
                     $model,
+                    $variant,
+                    $price,
                     $image,
                     $family,
                     $meta_title,
                     $meta_description,
                     $short_description,
                     $long_description,
-                    $variant,
-                    $price,
                 ]);
             }
         }
