@@ -153,10 +153,7 @@ class DownloadUnifersaCsv extends Command
             $product = $this->searchProductInDb($record);
 
             $family = $this->searchProductFamily($record);
-
-            if (! is_null($family)) {
-                $product->update(['family_id' => $family->id]);
-            }
+            $product->update(['family_id' => $family->id]);
 
             $progressbar->advance();
         }

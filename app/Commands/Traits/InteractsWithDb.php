@@ -11,6 +11,7 @@ trait InteractsWithDb
     private function searchProductInDb(array $record): ?Product
     {
         $query_array = [
+            'id' => '',
             'ean13' => '',
             'codigo_articulo' => '',
             'referencia_proveedor' => '',
@@ -36,7 +37,7 @@ trait InteractsWithDb
         return Product::firstOrCreate($query_array);
     }
 
-    private function searchProductFamily(array $record): ?Family
+    private function searchProductFamily(array $record): Family
     {
         $all_families = explode('>', $record['familia']);
 

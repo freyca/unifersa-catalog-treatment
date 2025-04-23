@@ -10,6 +10,7 @@ class UnifersaProductCsvNormalizer extends AbstractCsvNormalizer implements Prod
         [
             'FECHA_TARIFA' => 'fecha_tarifa',
             'COD_ART' => 'codigo_articulo',
+            'COD_ART' => 'id',
             'DESCRIPCION' => 'descripcion',
             'COD_PROV' => 'codigo_proveedor',
             'MARCA_COMERCIAL' => 'marca_comercial',

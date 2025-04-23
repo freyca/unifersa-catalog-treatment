@@ -26,4 +26,9 @@ class Variant extends Model
             'codigos_articulos' => 'array',
         ];
     }
+
+    public function products()
+    {
+        return Product::find($this->codigos_articulos);
+    }
 }

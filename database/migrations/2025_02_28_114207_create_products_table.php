@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
+            // $table->id();
+            $table->integer('id')->unsigned()->nullable()->index(); // References codigo_articulo in csv
             $table->boolean('descatalogado')->default(false)->index();
             $table->string('ean13')->nullable()->index();
             $table->string('codigo_articulo')->nullable()->index();
