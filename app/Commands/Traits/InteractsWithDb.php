@@ -82,7 +82,7 @@ trait InteractsWithDb
         return Family::firstOrCreate($query_array);
     }
 
-    private function markProductAsDiscontinued(array $record): bool
+    private function markProductAsDiscontinued(array $record): void
     {
         $query_array = [
             'codigo_articulo' => '',
@@ -102,9 +102,8 @@ trait InteractsWithDb
             ->first();
 
         if (! is_null($p)) {
-            return $p->descatalogado = true;
-        } else {
-            return false;
+            $p->descatalogado = true;
+            $p->save();
         }
     }
 }
