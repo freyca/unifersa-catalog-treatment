@@ -13,7 +13,6 @@ trait InteractsWithDb
         $query_array = [
             'id' => '',
             'ean13' => '',
-            'codigo_articulo' => '',
             'referencia_proveedor' => '',
             'codigo_proveedor' => '',
             'descripcion' => '',
@@ -37,9 +36,9 @@ trait InteractsWithDb
         return Product::firstOrCreate($query_array);
     }
 
-    private function searchProductFamily(array $record): Family
+    private function searchProductFamily(Product $product): Family
     {
-        $all_families = explode('>', $record['familia']);
+        $all_families = explode('>', $product->familia);
 
         return Family::where('descripcion', end($all_families))->first();
     }
@@ -85,7 +84,7 @@ trait InteractsWithDb
     private function markProductAsDiscontinued(array $record): void
     {
         $query_array = [
-            'codigo_articulo' => '',
+            'id' => '',
             'referencia_proveedor' => '',
             'ean13' => '',
         ];
@@ -96,7 +95,7 @@ trait InteractsWithDb
             }
         }
 
-        $p = Product::where('codigo_articulo', $query_array['codigo_articulo'])
+        $p = Product::where('id', $query_array['id'])
             ->where('referencia_proveedor', $query_array['referencia_proveedor'])
             ->where('ean13', $query_array['ean13'])
             ->first();

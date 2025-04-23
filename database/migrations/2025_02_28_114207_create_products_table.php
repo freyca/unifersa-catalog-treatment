@@ -16,7 +16,6 @@ return new class extends Migration
             $table->integer('id')->unsigned()->nullable()->index(); // References codigo_articulo in csv
             $table->boolean('descatalogado')->default(false)->index();
             $table->string('ean13')->nullable()->index();
-            $table->string('codigo_articulo')->nullable()->index();
             $table->string('referencia_proveedor')->nullable()->index();
             $table->string('codigo_proveedor')->nullable()->index();
             $table->string('descripcion')->nullable();

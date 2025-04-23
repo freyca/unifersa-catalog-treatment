@@ -4,6 +4,7 @@ namespace App\Commands;
 
 use App\Commands\Traits\InteractsWithCsv;
 use App\Commands\Traits\InteractsWithDb;
+use App\Models\Product;
 use App\Services\CsvNormalizer\Discontinued\DiscountinuedCsvNormalizer;
 use App\Services\CsvNormalizer\Family\FamilyCsvNormalizer;
 use App\Services\CsvNormalizer\Product\ProductCsvNormalizer;
@@ -54,6 +55,10 @@ class DownloadUnifersaCsv extends Command
         $this->line('Inserting products in database');
         $this->normalizeProductCsvFieldsAndAddToDb('productos.csv');
 
+        // Adding families to products
+        $this->line('Adding product family');
+        $this->addFamilyToProducts();
+
         // Marking as discontinued products in discontinued csv
         $this->line('Marking products as discontinued');
         $this->normalizeDiscontinuedCsvFieldsAndAddToDb('descatalogados.csv');
@@ -85,7 +90,7 @@ class DownloadUnifersaCsv extends Command
         $local_files = Storage::disk('local')->files();
 
         foreach ($this->files_to_download_with_its_final_names as $ftp_name => $downloaded_name) {
-            $matches = preg_grep('/'.$ftp_name.'/', $local_files);
+            $matches = preg_grep('/' . $ftp_name . '/', $local_files);
 
             if (count($matches) !== 0) {
                 Storage::disk('local')->move(array_pop($matches), $downloaded_name);
@@ -150,10 +155,25 @@ class DownloadUnifersaCsv extends Command
             // This has no other purpouse than create the products in database
             // It allows us to process further data from db and not csv
             // IMPORTANT: Needs to be done after the normalization
-            $product = $this->searchProductInDb($record);
+            $this->searchProductInDb($record);
+            $progressbar->advance();
+        }
 
-            $family = $this->searchProductFamily($record);
-            $product->update(['family_id' => $family->id]);
+        $progressbar->finish();
+        $this->line('');
+    }
+
+    private function addFamilyToProducts(): void
+    {
+        $products = Product::all();
+
+        $progressbar = $this->output->createProgressBar($products->count());
+        $progressbar->start();
+
+        foreach ($products as $product) {
+            $family = $this->searchProductFamily($product);
+            $product->family_id = $family->id;
+            $product->save();
 
             $progressbar->advance();
         }
@@ -199,7 +219,7 @@ class DownloadUnifersaCsv extends Command
 
     private function unzipFile(string $ftp_file_name): void
     {
-        $downloaded_ftp_file_name = storage_path('app/'.$ftp_file_name);
+        $downloaded_ftp_file_name = storage_path('app/' . $ftp_file_name);
 
         $zip = new ZipFile;
         $zip->openFile($downloaded_ftp_file_name);

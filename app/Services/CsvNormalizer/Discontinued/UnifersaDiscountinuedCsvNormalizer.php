@@ -9,7 +9,7 @@ class UnifersaDiscountinuedCsvNormalizer extends AbstractCsvNormalizer implement
     protected array $name_equivalences =
         [
             'FECHA' => 'fecha',
-            'COD_ART' => 'codigo_articulo',
+            'COD_ART' => 'id',
             'REF_PROV' => 'referencia_proveedor',
             'COD_EAN13' => 'ean13',
             'OBSERVACIONES' => 'observaciones',

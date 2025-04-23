@@ -32,7 +32,7 @@ class ImproveProductTextsWithAi extends Command
 
             $primer_articulo = $variant->codigos_articulos[0];
 
-            $product = Product::where('codigo_articulo', $primer_articulo)->first();
+            $product = Product::where('id', $primer_articulo)->first();
 
             try {
                 $this->line('Processing product with AI. Database id: '.$product->id);
