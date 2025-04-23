@@ -4,12 +4,11 @@ namespace App\Commands;
 
 use App\Commands\Traits\InteractsWithCsv;
 use App\Models\AiTexts;
-use League\Csv\Writer;
+use App\Models\Family;
 use App\Models\Product;
 use App\Models\Variant;
-use LaravelZero\Framework\Commands\Command;
 use Illuminate\Support\Str;
-use SplTempFileObject;
+use LaravelZero\Framework\Commands\Command;
 
 class ExportDbToCsv extends Command
 {
@@ -47,35 +46,66 @@ class ExportDbToCsv extends Command
     {
         $this->line('Preparing CSV file...');
 
-        //load the CSV document from a string
+        // load the CSV document from a string
         $csv = $this->openCsvFileAsWrite(config('custom.export_file_names.productos'));
 
-        //insert the header
+        // insert the header
+        // Ideally we iterate over family variant types, but we need to control order, so we will
+        // insert it manuyally
+        // $family_variant_names = Family::groupBy('nombre_variantes')->pluck('nombre_variantes');
+        // foreach ($family_variant_names as $family_variant_name) {
+        //    if ($family_variant_name === null) {
+        //        continue;
+        //    }
+        //
+        //    array_push($this->csv_headers, $family_variant_name);
+        // }
+
+        array_push($this->csv_headers, 'formato');
+        array_push($this->csv_headers, 'medida');
+        array_push($this->csv_headers, 'variante');
+
         $csv->insertOne($this->csv_headers);
 
-        foreach (Variant::all() as $variant) {
-            $name =  Str::apa($variant->nombre_producto);
+        $all_variants = Variant::all();
+
+        $progressbar = $this->output->createProgressBar($all_variants->count());
+        $progressbar->start();
+
+        foreach ($all_variants as $variant) {
+            $progressbar->advance();
+
+            $name = Str::apa($variant->nombre_producto);
             $model = Str::apa($variant->modelo_producto);
             $image = null;
             $family = null;
-            $variantes = $variant->codigos_articulos;
+            $products = $variant->products();
 
-            $texts = AiTexts::find($variant->ai_texts_id);
-
-            if ($texts === null) {
+            if ($products->count() === 0) {
                 continue;
             }
 
-            $meta_title = $texts->meta_titulo;
-            $meta_description = $texts->meta_descripcion;
-            $short_description = $texts->descripcion_corta;
-            $long_description = $texts->descripcion_larga;
+            $family_model = $products->first()->family;
 
-            $products = $variant->codigos_articulos;
+            while ($family_model->nombre_variantes === null) {
+                $family_model = Family::where('codigo_familia', $family_model->codigo_padre)->first();
+            }
 
-            foreach ($products as $product_code) {
-                $product = Product::where('codigo_articulo', $product_code)->first();
+            $nombre_variantes = $family_model->nombre_variantes;
 
+            $texts = AiTexts::find($variant->ai_texts_id);
+
+            //if ($texts === null) {
+            //    continue;
+            //}
+
+            $meta_title = $texts?->meta_titulo ?: '';
+            $meta_description = $texts?->meta_descripcion ?: '';
+            $short_description = $texts?->descripcion_corta ?: '';
+            $long_description = $texts?->descripcion_larga ?: '';
+
+            $counter = 0;
+            foreach ($products as $product) {
                 if ($image === null) {
                     $image = $product->imagen;
                 }
@@ -84,11 +114,11 @@ class ExportDbToCsv extends Command
                     $family = $product->familia;
                 }
 
-                $product_code = $product->codigo_articulo;
+                $product_code = $product->id;
                 $variant = $product->nombre_variante;
                 $price = $product->precio_venta;
 
-                $csv->insertOne([
+                $product_data = [
                     $product_code,
                     $name,
                     $model,
@@ -96,15 +126,29 @@ class ExportDbToCsv extends Command
                     $price,
                     $image,
                     $family,
-                    $meta_title,
-                    $meta_description,
-                    $short_description,
-                    $long_description,
-                ]);
+                ];
+
+                // For first product, we push AI texts
+                if ($counter === 0) {
+                    array_push($product_data, $meta_title, $meta_description, $short_description, $long_description);
+                } else {
+                    array_push($product_data, '', '', '', '');
+                }
+
+                match ($nombre_variantes) {
+                    'formato' => array_push($product_data, $product->nombre_variante, '', ''),
+                    'medida' => array_push($product_data, '', $product->nombre_variante, ''),
+                    'variante' => array_push($product_data, '', '', $product->nombre_variante),
+                };
+
+                $csv->insertOne($product_data);
             }
         }
 
         $csv->toString();
+
+        $progressbar->finish();
+        $this->line('');
 
         $this->info('File succesfylly exported: ' . storage_path('app/' . config('custom.export_file_names.productos')));
 
