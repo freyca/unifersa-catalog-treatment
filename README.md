@@ -7,7 +7,7 @@ Once database is seeded with the products, families, etc. it requires manual act
 On family table, root elements (the ones with codigo_padre equals null) need to be manually assigned the value of "nombre_variantes"
 
 This done, all commands should be complete functional <br/>
-Take in consideration that when creatin a csv with normalized content, only products which has already been processed with AI will be exported
+Take in consideration that when creating a csv with normalized content, only products which has already been processed with AI will be exported
 
 ## How to deploy
 
