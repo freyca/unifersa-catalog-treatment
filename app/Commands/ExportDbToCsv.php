@@ -75,8 +75,8 @@ class ExportDbToCsv extends Command
         foreach ($all_variants as $variant) {
             $progressbar->advance();
 
-            $name = Str::apa($variant->nombre_producto);
-            $model = Str::apa($variant->modelo_producto);
+            $name = Str::apa(Str::lower($variant->nombre_producto));
+            $model = Str::apa(Str::lower($variant->modelo_producto));
             $image = null;
             $family = null;
             $products = $variant->products();
@@ -95,14 +95,14 @@ class ExportDbToCsv extends Command
 
             $texts = AiTexts::find($variant->ai_texts_id);
 
-            //if ($texts === null) {
-            //    continue;
-            //}
+            if ($texts === null) {
+                continue;
+            }
 
-            $meta_title = $texts?->meta_titulo ?: '';
-            $meta_description = $texts?->meta_descripcion ?: '';
-            $short_description = $texts?->descripcion_corta ?: '';
-            $long_description = $texts?->descripcion_larga ?: '';
+            $meta_title = Str::replace(PHP_EOL, ' ', $texts->meta_titulo);
+            $meta_description = Str::replace(PHP_EOL, ' ', $texts->meta_descripcion);
+            $short_description = Str::replace(PHP_EOL, ' ', $texts->descripcion_corta);
+            $long_description =Str::replace(PHP_EOL, ' ',  $texts->descripcion_larga);
 
             $counter = 0;
             foreach ($products as $product) {
@@ -114,8 +114,12 @@ class ExportDbToCsv extends Command
                     $family = $product->familia;
                 }
 
+                if ($product->descatalogado === true) {
+                    continue;
+                }
+
                 $product_code = $product->id;
-                $variant = $product->nombre_variante;
+                $variant = Str::trim($product->nombre_variante);
                 $price = $product->precio_venta;
 
                 $product_data = [
@@ -142,6 +146,7 @@ class ExportDbToCsv extends Command
                 };
 
                 $csv->insertOne($product_data);
+                $counter++;
             }
         }
 
