@@ -33,7 +33,10 @@ trait InteractsWithDb
             }
         }
 
-        return Product::firstOrCreate($query_array);
+        return Product::firstOrCreate(
+            ['id' => $query_array['id']],
+            $query_array
+        );
     }
 
     private function searchProductFamily(Product $product): Family
