@@ -102,7 +102,7 @@ class ExportDbToCsv extends Command
             $meta_title = Str::replace(PHP_EOL, ' ', $texts->meta_titulo);
             $meta_description = Str::replace(PHP_EOL, ' ', $texts->meta_descripcion);
             $short_description = Str::replace(PHP_EOL, ' ', $texts->descripcion_corta);
-            $long_description =Str::replace(PHP_EOL, ' ',  $texts->descripcion_larga);
+            $long_description = Str::replace(PHP_EOL, ' ', $texts->descripcion_larga);
 
             $counter = 0;
             foreach ($products as $product) {
@@ -155,7 +155,7 @@ class ExportDbToCsv extends Command
         $progressbar->finish();
         $this->line('');
 
-        $this->info('File succesfylly exported: ' . storage_path('app/' . config('custom.export_file_names.productos')));
+        $this->info('File succesfylly exported: '.storage_path('app/'.config('custom.export_file_names.productos')));
 
         return self::SUCCESS;
     }
