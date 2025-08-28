@@ -61,8 +61,7 @@ trait InteractsWithDb
             }
         }
 
-        $variant = Variant::firstOrCreate($query_array);
-        $variant->update($record);
+        $variant = Variant::firstOrCreate($query_array, $record);
 
         return $variant;
     }
