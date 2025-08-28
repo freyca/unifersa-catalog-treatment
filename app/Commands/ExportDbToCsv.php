@@ -149,7 +149,7 @@ class ExportDbToCsv extends Command
         $progressbar->finish();
         $this->line('');
 
-        $this->info('File succesfylly exported: ' . storage_path('app/' . config('custom.export_file_names.productos')));
+        $this->info('File succesfylly exported: '.storage_path('app/'.config('custom.export_file_names.productos')));
 
         return self::SUCCESS;
     }
