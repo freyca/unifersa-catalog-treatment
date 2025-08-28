@@ -23,6 +23,7 @@ class ExportDbToCsv extends Command
 
     protected array $csv_headers = [
         'codigo_articulo',
+        'codigo_principal',
         'nombre',
         'modelo',
         'variantes',
@@ -77,6 +78,7 @@ class ExportDbToCsv extends Command
 
             $name = Str::apa(Str::lower($variant->nombre_producto));
             $model = Str::apa(Str::lower($variant->modelo_producto));
+            $product_family_code = min($variant->codigos_articulos);
             $image = null;
             $family = null;
             $products = $variant->products();
@@ -124,6 +126,7 @@ class ExportDbToCsv extends Command
 
                 $product_data = [
                     $product_code,
+                    $product_family_code,
                     $name,
                     $model,
                     $variant,
