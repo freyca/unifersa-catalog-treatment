@@ -29,6 +29,7 @@ class ExportDbToCsv extends Command
         'variante',
         'precio_venta',
         'imagen',
+        'familia_principal',
         'familia',
         'meta_titulo',
         'meta_descripcion',
@@ -129,6 +130,7 @@ class ExportDbToCsv extends Command
                     $variant,
                     $price,
                     $image,
+                    'Productos',
                     $family,
                 ];
 
