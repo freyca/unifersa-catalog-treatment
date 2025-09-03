@@ -24,6 +24,7 @@ class ExportDbToCsv extends Command
     protected array $csv_headers = [
         'codigo_articulo',
         'codigo_principal',
+        'ean13',
         'nombre',
         'nombre comercial',
         'modelo',
@@ -131,12 +132,14 @@ class ExportDbToCsv extends Command
                 $stock = $product->stock;
 
                 $product_code = $product->id;
+                $ean13 = $product->ean13;
                 $variant = Str::trim($product->nombre_variante);
                 $price = PriceCalculator::calc($product->precio_venta);
 
                 $product_data = [
                     $product_code,
                     $product_family_code,
+                    $ean13,
                     $name,
                     $commercial_name,
                     $model,
