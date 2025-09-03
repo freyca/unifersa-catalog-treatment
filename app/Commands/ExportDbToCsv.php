@@ -29,6 +29,7 @@ class ExportDbToCsv extends Command
         'variante',
         'precio_venta',
         'imagen',
+        'familia_raiz',
         'familia_principal',
         'familia',
         'meta_titulo',
@@ -77,7 +78,7 @@ class ExportDbToCsv extends Command
             $model = Str::apa(Str::lower($variant->modelo_producto));
             $product_family_code = min($variant->codigos_articulos);
             $image = null;
-            $family = null;
+            $families = null;
             $products = $variant->products();
 
             if ($products->count() === 0) {
@@ -109,9 +110,13 @@ class ExportDbToCsv extends Command
                     $image = $product->imagen;
                 }
 
-                if ($family === null) {
-                    $family = $product->familia;
+                if ($families === null) {
+                    $families = $product->familia;
                 }
+
+                $exploded_families = explode('>', $families);
+                $root_family = 'Productos';
+                $main_family = end($exploded_families);
 
                 if ($product->descatalogado === true) {
                     continue;
@@ -130,8 +135,9 @@ class ExportDbToCsv extends Command
                     $variant,
                     $price,
                     $image,
-                    'Productos',
-                    $family,
+                    $root_family,
+                    $main_family,
+                    $families,
                 ];
 
                 // For first product, we push AI texts
