@@ -6,6 +6,7 @@ use App\Commands\Traits\InteractsWithCsv;
 use App\Models\AiTexts;
 use App\Models\Family;
 use App\Models\Variant;
+use App\Services\PriceCalculator;
 use Illuminate\Support\Str;
 use LaravelZero\Framework\Commands\Command;
 
@@ -124,7 +125,7 @@ class ExportDbToCsv extends Command
 
                 $product_code = $product->id;
                 $variant = Str::trim($product->nombre_variante);
-                $price = $product->precio_venta;
+                $price = PriceCalculator::calc($product->precio_venta);
 
                 $product_data = [
                     $product_code,
@@ -157,7 +158,7 @@ class ExportDbToCsv extends Command
         $progressbar->finish();
         $this->line('');
 
-        $this->info('File succesfylly exported: '.storage_path('app/'.config('custom.export_file_names.productos')));
+        $this->info('File succesfylly exported: ' . storage_path('app/' . config('custom.export_file_names.productos')));
 
         return self::SUCCESS;
     }
