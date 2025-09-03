@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class AiTexts extends Model
 {
@@ -14,8 +14,8 @@ class AiTexts extends Model
         'descripcion_larga',
     ];
 
-    public function products(): BelongsToMany
+    public function variant(): HasOne
     {
-        return $this->belongsToMany(Product::class);
+        return $this->hasOne(Variant::class);
     }
 }

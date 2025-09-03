@@ -37,9 +37,4 @@ class Product extends Model
     {
         return $this->belongsTo(Family::class);
     }
-
-    public function aiTexts(): BelongsTo
-    {
-        return $this->belongsTo(AiTexts::class);
-    }
 }
