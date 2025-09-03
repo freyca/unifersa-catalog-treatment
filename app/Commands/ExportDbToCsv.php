@@ -25,10 +25,13 @@ class ExportDbToCsv extends Command
         'codigo_articulo',
         'codigo_principal',
         'nombre',
+        'nombre comercial',
         'modelo',
+        'marca',
         'nombre_variante',
         'variante',
         'precio_venta',
+        'stock',
         'imagen',
         'familia_raiz',
         'familia_principal',
@@ -77,6 +80,8 @@ class ExportDbToCsv extends Command
 
             $name = Str::apa(Str::lower($variant->nombre_producto));
             $model = Str::apa(Str::lower($variant->modelo_producto));
+            $brand = $variant->marca_comercial;
+            $commercial_name = $name . ' ' . $model . ' ' . $brand;
             $product_family_code = min($variant->codigos_articulos);
             $image = null;
             $families = null;
@@ -123,6 +128,8 @@ class ExportDbToCsv extends Command
                     continue;
                 }
 
+                $stock = $product->stock;
+
                 $product_code = $product->id;
                 $variant = Str::trim($product->nombre_variante);
                 $price = PriceCalculator::calc($product->precio_venta);
@@ -131,10 +138,13 @@ class ExportDbToCsv extends Command
                     $product_code,
                     $product_family_code,
                     $name,
+                    $commercial_name,
                     $model,
+                    $brand,
                     $variants_name,
                     $variant,
                     $price,
+                    $stock,
                     $image,
                     $root_family,
                     $main_family,
