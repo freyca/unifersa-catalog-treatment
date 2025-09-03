@@ -100,7 +100,7 @@ class ExportDbToCsv extends Command
 
             $variants_name = $family_model->nombre_variantes;
 
-            $texts = AiTexts::find($variant->ai_texts_id);
+            $texts = $variant->aiTexts;
 
             if ($texts === null) {
                 continue;

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Variant extends Model
 {
@@ -30,5 +31,10 @@ class Variant extends Model
     public function products()
     {
         return Product::find($this->codigos_articulos);
+    }
+
+    public function aiTexts(): BelongsTo
+    {
+        return $this->belongsTo(AiTexts::class);
     }
 }
