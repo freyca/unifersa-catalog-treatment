@@ -57,18 +57,6 @@ class ExportDbToCsv extends Command
         // load the CSV document from a string
         $csv = $this->openCsvFileAsWrite(config('custom.export_file_names.productos'));
 
-        // insert the header
-        // Ideally we iterate over family variant types, but we need to control order, so we will
-        // insert it manuyally
-        // $family_variant_names = Family::groupBy('nombre_variantes')->pluck('nombre_variantes');
-        // foreach ($family_variant_names as $family_variant_name) {
-        //    if ($family_variant_name === null) {
-        //        continue;
-        //    }
-        //
-        //    array_push($this->csv_headers, $family_variant_name);
-        // }
-
         $csv->insertOne($this->csv_headers);
 
         $all_variants = Variant::all();
@@ -82,7 +70,7 @@ class ExportDbToCsv extends Command
             $name = Str::apa(Str::lower($variant->nombre_producto));
             $model = Str::apa(Str::lower($variant->modelo_producto));
             $brand = $variant->marca_comercial;
-            $commercial_name = $name . ' ' . $model;
+            $commercial_name = $variant->nombre_personalizado ? $variant->nombre_personalizado : $name . ' ' . $model;
             $product_family_code = min($variant->codigos_articulos);
             $image = null;
             $families = null;
