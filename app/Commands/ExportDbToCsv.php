@@ -72,7 +72,7 @@ class ExportDbToCsv extends Command
 
             $name = Str::apa(Str::lower($variant->nombre_producto));
             $model = Str::apa(Str::lower($variant->modelo_producto));
-            $brand = $variant->marca_comercial;
+            $brand = Str::apa($variant->marca_comercial);
             $commercial_name = $variant->nombre_personalizado ? $variant->nombre_personalizado : $name . ' ' . $model;
             $product_family_code = min($variant->codigos_articulos);
             $image = null;
