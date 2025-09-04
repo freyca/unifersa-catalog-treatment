@@ -53,7 +53,7 @@ class ExportDiscontinuedProductsToCsv extends Command
 
             $product_data = [
                 $discontinued_product->id,
-                $discontinued_product->family()->codigos_articulos[0] ?? null,
+                $discontinued_product->variant()->codigos_articulos[0] ?? null,
                 $discontinued_product->ean13,
             ];
 

@@ -42,7 +42,12 @@ class Product extends Model
         ];
     }
 
-    public function family(): ?Variant
+    public function family(): BelongsTo
+    {
+        return $this->belongsTo(Family::class);
+    }
+
+    public function variant(): ?Variant
     {
         return Variant::where('codigos_articulos', 'LIKE', '%"' . $this->id . '"%')->first();
     }
