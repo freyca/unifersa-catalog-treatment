@@ -37,7 +37,6 @@ class ExportDbToCsv extends Command
         'descripcion_formato_venta',
         'stock',
         'imagen',
-        'familia_raiz',
         'familia_principal',
         'familia',
         'meta_titulo',
@@ -116,6 +115,8 @@ class ExportDbToCsv extends Command
                 $root_family = 'Productos';
                 $main_family = end($exploded_families);
 
+                $families = $root_family . '>' . $families;
+
                 if ($product->descatalogado === true) {
                     continue;
                 }
@@ -146,7 +147,6 @@ class ExportDbToCsv extends Command
                     $desc_sell_format,
                     $stock,
                     $image,
-                    $root_family,
                     $main_family,
                     $families,
                 ];
