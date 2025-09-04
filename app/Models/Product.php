@@ -24,6 +24,15 @@ class Product extends Model
         'nombre_variante',
         'descatalogado',
         'family_id',
+        'unidad_facturacion',
+        'descripcion_formato_venta',
+        'unidades_formato_venta',
+        'unidad_minima_venta',
+        'ancho_especial',
+        'agreement_dangerous_road_especial',
+        'logistica_especial',
+        'peso_unidad_minima_venta',
+        'tipo_iva',
     ];
 
     public function casts()

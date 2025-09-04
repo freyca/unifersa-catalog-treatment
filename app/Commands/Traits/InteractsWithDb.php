@@ -25,6 +25,15 @@ trait InteractsWithDb
             'nombre_producto' => '',
             'modelo_producto' => '',
             'nombre_variante' => '',
+            'unidad_facturacion' => '',
+            'descripcion_formato_venta' => '',
+            'unidades_formato_venta' => '',
+            'unidad_minima_venta' => '',
+            'ancho_especial' => '',
+            'agreement_dangerous_road_especial' => '',
+            'logistica_especial' => '',
+            'peso_unidad_minima_venta' => '',
+            'tipo_iva' => '',
         ];
 
         foreach ($record as $key => $value) {
@@ -33,7 +42,7 @@ trait InteractsWithDb
             }
         }
 
-        return Product::firstOrCreate(
+        return Product::updateOrCreate(
             ['id' => $query_array['id']],
             $query_array
         );
@@ -61,7 +70,7 @@ trait InteractsWithDb
             }
         }
 
-        $variant = Variant::firstOrCreate($query_array, $record);
+        $variant = Variant::updateOrCreate($query_array, $record);
 
         return $variant;
     }
@@ -80,7 +89,7 @@ trait InteractsWithDb
             }
         }
 
-        return Family::firstOrCreate($query_array);
+        return Family::updateOrCreate($query_array);
     }
 
     private function markProductAsDiscontinued(array $record): void
