@@ -3,7 +3,6 @@
 namespace App\Commands;
 
 use App\Commands\Traits\InteractsWithCsv;
-use App\Models\AiTexts;
 use App\Models\Family;
 use App\Models\Variant;
 use App\Services\PriceCalculator;
@@ -75,10 +74,16 @@ class ExportDbToCsv extends Command
                 continue;
             }
 
+            $texts = $variant->aiTexts;
+
+            if ($texts === null) {
+                continue;
+            }
+
             $name = Str::ucfirst(Str::lower($variant->nombre_producto));
             $model = Str::ucfirst(Str::lower($variant->modelo_producto));
             $brand = Str::ucfirst(Str::lower($variant->marca_comercial));
-            $commercial_name = $variant->nombre_personalizado ? $variant->nombre_personalizado : $name . ' ' . $model;
+            $commercial_name = $variant->nombre_personalizado ? $variant->nombre_personalizado : $name.' '.$model;
             $product_family_code = min($variant->codigos_articulos);
             $image = null;
             $families = null;
@@ -90,12 +95,6 @@ class ExportDbToCsv extends Command
 
             $variants_name = Str::ucfirst($family_model->nombre_variantes);
 
-            $texts = $variant->aiTexts;
-
-            if ($texts === null) {
-                continue;
-            }
-
             $meta_title = Str::replace(PHP_EOL, ' ', $texts->meta_titulo);
             $meta_description = Str::replace(PHP_EOL, ' ', $texts->meta_descripcion);
             $short_description = Str::replace(PHP_EOL, ' ', $texts->descripcion_corta);
@@ -106,7 +105,7 @@ class ExportDbToCsv extends Command
                 if ($product->descatalogado === true) {
                     continue;
                 }
-                
+
                 if ($image === null) {
                     $image = $product->imagen;
                 }
@@ -119,7 +118,7 @@ class ExportDbToCsv extends Command
                 $root_family = 'Productos';
                 $main_family = end($exploded_families);
 
-                $families = $root_family . '>' . $families;
+                $families = $root_family.'>'.$families;
 
                 $stock = $product->stock;
 
@@ -168,7 +167,7 @@ class ExportDbToCsv extends Command
         $progressbar->finish();
         $this->line('');
 
-        $this->info('File succesfylly exported: ' . storage_path('app/' . config('custom.export_file_names.productos')));
+        $this->info('File succesfylly exported: '.storage_path('app/'.config('custom.export_file_names.productos')));
 
         return self::SUCCESS;
     }

@@ -4,7 +4,6 @@ namespace App\Commands;
 
 use App\Commands\Traits\InteractsWithCsv;
 use App\Models\Product;
-use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 
 class ExportDiscontinuedProductsToCsv extends Command
@@ -65,7 +64,7 @@ class ExportDiscontinuedProductsToCsv extends Command
         $progressbar->finish();
         $this->line('');
 
-        $this->info('File succesfylly exported: ' . storage_path('app/' . config('custom.export_file_names.descontinuados')));
+        $this->info('File succesfylly exported: '.storage_path('app/'.config('custom.export_file_names.descontinuados')));
 
         return self::SUCCESS;
     }
