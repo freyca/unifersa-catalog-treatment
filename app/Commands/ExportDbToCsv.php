@@ -32,6 +32,9 @@ class ExportDbToCsv extends Command
         'nombre_variante',
         'variante',
         'precio_venta',
+        'peso',
+        'unidad_minima_venta',
+        'descripcion_formato_venta',
         'stock',
         'imagen',
         'familia_raiz',
@@ -123,6 +126,9 @@ class ExportDbToCsv extends Command
                 $ean13 = $product->ean13;
                 $variant = Str::trim($product->nombre_variante);
                 $price = PriceCalculator::calc($product->precio_venta);
+                $weight = $product->peso_unidad_minima_venta;
+                $min_sell_qty = $product->unidad_minima_venta;
+                $desc_sell_format = $product->descripcion_formato_venta;
 
                 $product_data = [
                     $product_code,
@@ -135,6 +141,9 @@ class ExportDbToCsv extends Command
                     $variants_name,
                     $variant,
                     $price,
+                    $weight,
+                    $min_sell_qty,
+                    $desc_sell_format,
                     $stock,
                     $image,
                     $root_family,
