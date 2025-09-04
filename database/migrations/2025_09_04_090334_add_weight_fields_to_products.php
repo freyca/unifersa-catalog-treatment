@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->string('unidad_facturacion')->nullable()->defalult(null);
-            $table->string('descripcion_formato_venta')->nullable()->defalult(null);
-            $table->string('unidades_formato_venta')->nullable()->defalult(null);
-            $table->string('unidad_minima_venta')->nullable()->defalult(null);
-            $table->string('ancho_especial')->nullable()->defalult(null);
-            $table->string('agreement_dangerous_road_especial')->nullable()->defalult(null);
-            $table->string('logistica_especial')->nullable()->defalult(null);
-            $table->string('peso_unidad_minima_venta')->nullable()->defalult(null);
-            $table->string('tipo_iva')->nullable()->defalult(null);
+            $table->string('descripcion_formato_venta')->nullable()->defalult(null)->after('nombre_variante');
+            $table->string('unidades_formato_venta')->nullable()->defalult(null)->after('nombre_variante');
+            $table->string('ancho_especial')->nullable()->defalult(null)->after('nombre_variante');
+            $table->string('logistica_especial')->nullable()->defalult(null)->after('nombre_variante');
+            $table->string('agreement_dangerous_road_especial')->nullable()->defalult(null)->after('nombre_variante');
+            $table->string('tipo_iva')->nullable()->defalult(null)->after('nombre_variante');
+            $table->string('unidad_facturacion')->nullable()->defalult(null)->after('nombre_variante');
+            $table->string('unidad_minima_venta')->nullable()->defalult(null)->after('nombre_variante');
+            $table->string('peso_unidad_minima_venta')->nullable()->defalult(null)->after('nombre_variante');
         });
     }
 
