@@ -26,7 +26,7 @@ class ExportDbToCsv extends Command
         'codigo_principal',
         'ean13',
         'nombre',
-        'nombre comercial',
+        'nombre_comercial',
         'modelo',
         'marca',
         'nombre_variante',
@@ -69,26 +69,26 @@ class ExportDbToCsv extends Command
         foreach ($all_variants as $variant) {
             $progressbar->advance();
 
-            $name = Str::apa(Str::lower($variant->nombre_producto));
-            $model = Str::apa(Str::lower($variant->modelo_producto));
-            $brand = Str::apa($variant->marca_comercial);
-            $commercial_name = $variant->nombre_personalizado ? $variant->nombre_personalizado : $name . ' ' . $model;
-            $product_family_code = min($variant->codigos_articulos);
-            $image = null;
-            $families = null;
             $products = $variant->products();
 
             if ($products->count() === 0) {
                 continue;
             }
 
+            $name = Str::ucfirst(Str::lower($variant->nombre_producto));
+            $model = Str::ucfirst(Str::lower($variant->modelo_producto));
+            $brand = Str::ucfirst(Str::lower($variant->marca_comercial));
+            $commercial_name = $variant->nombre_personalizado ? $variant->nombre_personalizado : $name . ' ' . $model;
+            $product_family_code = min($variant->codigos_articulos);
+            $image = null;
+            $families = null;
             $family_model = $products->first()->family;
 
             while ($family_model->nombre_variantes === null) {
                 $family_model = Family::where('codigo_familia', $family_model->codigo_padre)->first();
             }
 
-            $variants_name = $family_model->nombre_variantes;
+            $variants_name = Str::ucfirst($family_model->nombre_variantes);
 
             $texts = $variant->aiTexts;
 
@@ -103,6 +103,10 @@ class ExportDbToCsv extends Command
 
             $counter = 0;
             foreach ($products as $product) {
+                if ($product->descatalogado === true) {
+                    continue;
+                }
+                
                 if ($image === null) {
                     $image = $product->imagen;
                 }
@@ -117,15 +121,11 @@ class ExportDbToCsv extends Command
 
                 $families = $root_family . '>' . $families;
 
-                if ($product->descatalogado === true) {
-                    continue;
-                }
-
                 $stock = $product->stock;
 
                 $product_code = $product->id;
                 $ean13 = $product->ean13;
-                $variant = Str::trim($product->nombre_variante);
+                $variant = Str::ucfirst(Str::lower(Str::trim($product->nombre_variante)));
                 $price = PriceCalculator::calc($product->precio_venta);
                 $weight = $product->peso_unidad_minima_venta;
                 $min_sell_qty = $product->unidad_minima_venta;
