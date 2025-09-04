@@ -24,3 +24,6 @@ Take in consideration that when creating a csv with normalized content, only pro
 
  - Export the contents to a csv so it can be imported in the desired eshop <br/>
 ```php unifersa u:export-db-to-csv```
+
+ - Export the discontinued products to a csv to hide them in the shop <br/>
+```php unifersa u:export-discontinued-products-to-csv```
