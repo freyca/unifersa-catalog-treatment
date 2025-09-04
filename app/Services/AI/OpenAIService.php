@@ -33,7 +33,7 @@ class OpenAIService implements AIService
 
     private string $meta_texts_prompt = 'Genera un texto json con las claves meta_title y meta_description. '.
         'El límite de meta_title es de 70 caracteres. '.
-        'El límite de meta_description es de 155 caracteres. '.
+        'El límite de meta_description es de 155 caracteres y no puede contener el caracter ">". '.
         'Usa iconos para SEO. No abuses de iconos. Son preferibles al inicio del texto. '.
         'Pon espacios entre los iconos y las letras. '.
         'No incluyas saltos de línea. '.
@@ -44,7 +44,7 @@ class OpenAIService implements AIService
         'Un párrafo de entrada con información básica sobre el producto. '.
         'Una ficha técnica resumida en forma de lista. '.
         'Un párrafo final con una llamada a la acción. '.
-        'EL límite del texto que  devuelvas no debe exceder los  800 caracteres.';
+        'EL límite del texto que  devuelvas no debe exceder los 780 caracteres.';
 
     private string $long_description_prompt = 'Con los datos proporcionados haz una descripción larga del producto que consista exactamente en: '.
         'Una etiqueta "h4" en negrita con el nombre del producto. '.
