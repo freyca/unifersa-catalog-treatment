@@ -5,7 +5,6 @@ namespace App\Commands;
 use App\Commands\Traits\InteractsWithCsv;
 use App\Models\Family;
 use App\Models\Variant;
-use App\Services\PriceCalculator;
 use Illuminate\Support\Str;
 use LaravelZero\Framework\Commands\Command;
 
@@ -83,7 +82,7 @@ class ExportDbToCsv extends Command
             $name = Str::ucfirst(Str::lower($variant->nombre_producto));
             $model = Str::ucfirst(Str::lower($variant->modelo_producto));
             $brand = Str::ucfirst(Str::lower($variant->marca_comercial));
-            $commercial_name = $variant->nombre_personalizado ? $variant->nombre_personalizado : $name.' '.$model;
+            $commercial_name = $variant->nombre_personalizado ? $variant->nombre_personalizado : $name . ' ' . $model;
             $product_family_code = min($variant->codigos_articulos);
             $image = null;
             $families = null;
@@ -118,14 +117,14 @@ class ExportDbToCsv extends Command
                 $root_family = 'Productos';
                 $main_family = end($exploded_families);
 
-                $families = $root_family.'>'.$families;
+                $families = $root_family . '>' . $families;
 
                 $stock = $product->stock;
 
                 $product_code = $product->id;
                 $ean13 = $product->ean13;
                 $variant = Str::ucfirst(Str::lower(Str::trim($product->nombre_variante)));
-                $price = PriceCalculator::calc($product->precio_venta);
+                $price = $product->precio_venta;
                 $weight = $product->peso_unidad_minima_venta;
                 $min_sell_qty = $product->unidad_minima_venta;
                 $desc_sell_format = $product->descripcion_formato_venta;
@@ -167,7 +166,7 @@ class ExportDbToCsv extends Command
         $progressbar->finish();
         $this->line('');
 
-        $this->info('File succesfylly exported: '.storage_path('app/'.config('custom.export_file_names.productos')));
+        $this->info('File succesfylly exported: ' . storage_path('app/' . config('custom.export_file_names.productos')));
 
         return self::SUCCESS;
     }
