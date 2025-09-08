@@ -18,6 +18,8 @@ Take in consideration that when creating a csv with normalized content, only pro
 
  - Download csv files and insert them in the database <br/>
 ```php unifersa u:download-csv```
+ ### After the first execution, it is needed to fill the fields 'nombre_variantes' in families table
+ ### Only the families with 'codigo_padre' equals null need this to be filled
 
  - Generate texts with AI (actually it supports OpenAI) for products <br/>
 ```php unifersa u:improve-texts-with-ai```
@@ -27,3 +29,17 @@ Take in consideration that when creating a csv with normalized content, only pro
 
  - Export the discontinued products to a csv to hide them in the shop <br/>
 ```php unifersa u:export-discontinued-products-to-csv```
+
+TODO:
+ymascoop, ver datos de conexion en .env
+Archivo: Articulos.xls
+
+
+Imágenes de marcas:
+Marca 3L, o logo é https://www.unifersa.es/imagenes_articulos//marcas/3_3L.jpg
+Marca JUBA, o logo é https://www.unifersa.es/imagenes_articulos//marcas/3_JUBA.jpg
+ISASALINE -> https://www.unifersa.es/imagenes_articulos//marcas/3_ISSALINE.jpg
+ATG -> https://www.unifersa.es/imagenes_articulos//marcas/3_ATG.jpg
+
+
+Ver como importar as imaxes das marcas
