@@ -5,6 +5,8 @@ namespace App\Commands;
 use App\Commands\Traits\InteractsWithCsv;
 use App\Models\Family;
 use App\Models\Variant;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use LaravelZero\Framework\Commands\Command;
 
@@ -17,7 +19,8 @@ class ExportDbToCsv extends Command
      *
      * @var string
      */
-    protected $signature = 'u:export-db-to-csv';
+    protected $signature = 'u:export-db-to-csv
+                            {--L|last: Export only products modified in the last 24 hours}';
 
     protected array $csv_headers = [
         'codigo_articulo',
@@ -59,7 +62,7 @@ class ExportDbToCsv extends Command
 
         $csv->insertOne($this->csv_headers);
 
-        $all_variants = Variant::all();
+        $all_variants = $this->getExportableProducts();
 
         $progressbar = $this->output->createProgressBar($all_variants->count());
         $progressbar->start();
@@ -169,5 +172,14 @@ class ExportDbToCsv extends Command
         $this->info('File succesfylly exported: ' . storage_path('app/' . config('custom.export_file_names.productos')));
 
         return self::SUCCESS;
+    }
+
+    private function getExportableProducts(): Collection
+    {
+        if (! $this->argument('user')) {
+            return Variant::all();
+        }
+
+        return Variant::where('updated_at', '>', Carbon::now()->subDays(2))->get();
     }
 }
