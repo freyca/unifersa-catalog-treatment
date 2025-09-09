@@ -20,7 +20,7 @@ class ExportDbToCsv extends Command
      * @var string
      */
     protected $signature = 'u:export-db-to-csv
-                            {--L|last: Export only products modified in the last 24 hours}';
+                            {--last : Export only products modified in the last 24 hours}';
 
     protected array $csv_headers = [
         'codigo_articulo',
@@ -176,10 +176,12 @@ class ExportDbToCsv extends Command
 
     private function getExportableProducts(): Collection
     {
-        if (! $this->argument('user')) {
-            return Variant::all();
+        if ($this->option('last')) {
+            $this->line('Exporting only last modified rows...');
+            return Variant::where('updated_at', '>', Carbon::now()->subDays(2))->get();
         }
 
-        return Variant::where('updated_at', '>', Carbon::now()->subDays(2))->get();
+        $this->line('Exporting all database rows...');
+        return Variant::all();
     }
 }
