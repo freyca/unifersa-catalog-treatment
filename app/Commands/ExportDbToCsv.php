@@ -114,13 +114,13 @@ class ExportDbToCsv extends Command
 
                 if ($families === null) {
                     $families = $product->familia;
+
+                    $exploded_families = explode('>', $families);
+                    $root_family = 'Productos';
+                    $main_family = end($exploded_families);
+
+                    $families = $root_family . '>' . $families;
                 }
-
-                $exploded_families = explode('>', $families);
-                $root_family = 'Productos';
-                $main_family = end($exploded_families);
-
-                $families = $root_family . '>' . $families;
 
                 $stock = $product->stock;
 
