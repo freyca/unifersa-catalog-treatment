@@ -11,7 +11,7 @@ function main()
 
     if [[ "$1" -eq 'full' ]]
     then
-        $PHP_BIN unifersa u:export-db-to-csv &>/dev/null || exit 1
+        $PHP_BIN unifersa u:export-db-to-csv --last &>/dev/null || exit 1
     fi
 
     exit 0
