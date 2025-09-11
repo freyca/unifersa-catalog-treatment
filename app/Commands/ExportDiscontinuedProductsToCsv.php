@@ -3,12 +3,13 @@
 namespace App\Commands;
 
 use App\Commands\Traits\InteractsWithCsv;
+use App\Commands\Traits\UploadsFileToFtp;
 use App\Models\Product;
 use LaravelZero\Framework\Commands\Command;
 
 class ExportDiscontinuedProductsToCsv extends Command
 {
-    use InteractsWithCsv;
+    use InteractsWithCsv, UploadsFileToFtp;
 
     /**
      * The name and signature of the console command.
@@ -62,6 +63,9 @@ class ExportDiscontinuedProductsToCsv extends Command
         $csv->toString();
 
         $progressbar->finish();
+
+        $this->uploadExportedFile(config('custom.export_file_names.descontinuados'));
+
         $this->line('');
 
         $this->info('File succesfylly exported: '.storage_path('app/'.config('custom.export_file_names.descontinuados')));

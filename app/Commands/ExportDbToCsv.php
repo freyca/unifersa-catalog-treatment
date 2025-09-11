@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use App\Commands\Traits\InteractsWithCsv;
+use App\Commands\Traits\UploadsFileToFtp;
 use App\Models\Family;
 use App\Models\Variant;
 use Carbon\Carbon;
@@ -12,7 +13,7 @@ use LaravelZero\Framework\Commands\Command;
 
 class ExportDbToCsv extends Command
 {
-    use InteractsWithCsv;
+    use InteractsWithCsv, UploadsFileToFtp;
 
     /**
      * The name and signature of the console command.
@@ -85,7 +86,7 @@ class ExportDbToCsv extends Command
             $name = Str::ucfirst(Str::lower($variant->nombre_producto));
             $model = Str::ucfirst(Str::lower($variant->modelo_producto));
             $brand = Str::ucfirst(Str::lower($variant->marca_comercial));
-            $commercial_name = $variant->nombre_personalizado ? $variant->nombre_personalizado : $name . ' ' . $model;
+            $commercial_name = $variant->nombre_personalizado ? $variant->nombre_personalizado : $name.' '.$model;
             $product_family_code = min($variant->codigos_articulos);
             $image = null;
             $families = null;
@@ -119,7 +120,7 @@ class ExportDbToCsv extends Command
                     $root_family = 'Productos';
                     $main_family = end($exploded_families);
 
-                    $families = $root_family . '>' . $families;
+                    $families = $root_family.'>'.$families;
                 }
 
                 $stock = $product->stock;
@@ -167,9 +168,12 @@ class ExportDbToCsv extends Command
         $csv->toString();
 
         $progressbar->finish();
+
+        $this->uploadExportedFile(config('custom.export_file_names.productos'));
+
         $this->line('');
 
-        $this->info('File succesfylly exported: ' . storage_path('app/' . config('custom.export_file_names.productos')));
+        $this->info('File succesfylly exported: '.storage_path('app/'.config('custom.export_file_names.productos')));
 
         return self::SUCCESS;
     }
@@ -178,10 +182,12 @@ class ExportDbToCsv extends Command
     {
         if ($this->option('last')) {
             $this->line('Exporting only last modified rows...');
+
             return Variant::where('updated_at', '>', Carbon::now()->subDays(2))->get();
         }
 
         $this->line('Exporting all database rows...');
+
         return Variant::all();
     }
 }

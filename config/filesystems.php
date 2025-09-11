@@ -14,5 +14,12 @@ return [
             // 'ssl' => true,
             // 'timeout' => 30,
         ],
+
+        'industrialferretera' => [
+            'driver' => 'ftp',
+            'host' => env('INDUST_FTP_SERVER'),
+            'username' => env('INDUST_FTP_USER'),
+            'password' => env('INDUST_FTP_PASSWORD'),
+        ],
     ],
 ];
