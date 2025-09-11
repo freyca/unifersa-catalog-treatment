@@ -49,6 +49,9 @@ class Product extends Model
 
     public function variant(): ?Variant
     {
-        return Variant::where('codigos_articulos', 'LIKE', '%"'.$this->id.'"%')->first();
+        return Variant::where('codigos_articulos', 'LIKE', '%"' . $this->id . '"%')
+            ->orWhere('codigos_articulos', 'LIKE', '%"0' . $this->id . '"%')
+            ->orWhere('codigos_articulos', 'LIKE', '%"00' . $this->id . '"%')
+            ->first();
     }
 }

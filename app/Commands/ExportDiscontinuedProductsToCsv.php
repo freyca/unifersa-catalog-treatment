@@ -51,9 +51,11 @@ class ExportDiscontinuedProductsToCsv extends Command
         foreach ($discontinued_products as $discontinued_product) {
             $progressbar->advance();
 
+            $main_code = $discontinued_product->variant()?->codigos_articulos[0] ? ltrim($discontinued_product->variant()->codigos_articulos[0], 0) : null;
+
             $product_data = [
                 $discontinued_product->id,
-                $discontinued_product->variant()->codigos_articulos[0] ?? null,
+                $main_code,
                 $discontinued_product->ean13,
             ];
 
@@ -68,7 +70,7 @@ class ExportDiscontinuedProductsToCsv extends Command
 
         $this->line('');
 
-        $this->info('File succesfylly exported: '.storage_path('app/'.config('custom.export_file_names.descontinuados')));
+        $this->info('File succesfylly exported: ' . storage_path('app/' . config('custom.export_file_names.descontinuados')));
 
         return self::SUCCESS;
     }
