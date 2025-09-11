@@ -213,8 +213,10 @@ class DownloadUnifersaCsv extends Command
 
     private function downloadFile(string $ftp_file_name, string $local_file_name): void
     {
-        $contents = Storage::disk('unifersa')->get($ftp_file_name);
-        Storage::disk('local')->put($local_file_name, $contents);
+        Storage::disk('local')->put(
+            $local_file_name,
+            Storage::disk('unifersa')->get($ftp_file_name)
+        );
     }
 
     private function unzipFile(string $ftp_file_name): void

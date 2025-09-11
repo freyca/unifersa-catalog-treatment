@@ -12,7 +12,9 @@ trait UploadsFileToFtp
             Storage::disk('industrialferretera')->delete($file_name);
         }
 
-        $contents = Storage::disk('local')->get($file_name);
-        Storage::disk('industrialferretera')->put($file_name, $contents);
+        Storage::disk('industrialferretera')->put(
+            $file_name,
+            Storage::disk('local')->get($file_name)
+        );
     }
 }
