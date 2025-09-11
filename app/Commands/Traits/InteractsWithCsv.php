@@ -31,7 +31,7 @@ trait InteractsWithCsv
     protected function openCsvFileAsWrite(string $csv_file_name, string $delimiter = '|'): Writer
     {
         if ($this->validatesCsvFileExists($csv_file_name)) {
-            Storage::disk('local')->move($csv_file_name, $csv_file_name.Str::random());
+            Storage::disk('local')->delete($csv_file_name);
         }
 
         $writer = Writer::createFromPath(storage_path('app/'.$csv_file_name), 'w+');
