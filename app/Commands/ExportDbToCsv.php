@@ -70,8 +70,13 @@ class ExportDbToCsv extends Command
         $counter = 0;
 
         foreach ($chunk_collections as $chunk) {
-            // load the CSV document from a string
-            $this->csv = $this->openCsvFileAsWrite(config('custom.export_file_names.productos') . '-' . $counter . '.csv');
+            if ($counter === 0) {
+                $export_file_name = config('custom.export_file_names.productos');
+            } else {
+                $export_file_name = config('custom.export_file_names.productos') . '-' . $counter;
+            }
+
+            $this->csv = $this->openCsvFileAsWrite($export_file_name);
 
             foreach ($chunk as $variant) {
                 $this->addHeaderToCSV();
@@ -83,9 +88,9 @@ class ExportDbToCsv extends Command
 
             $this->csv->toString();
 
-            $this->uploadExportedFile(config('custom.export_file_names.productos') . '-' . $counter . '.csv');
+            $this->uploadExportedFile($export_file_name);
 
-            $this->info('File succesfylly exported: ' . storage_path('app/' . config('custom.export_file_names.productos') . '-' . $counter . '.csv'));
+            $this->info('File succesfylly exported: ' . storage_path('app/' . $export_file_name));
 
             $counter++;
         }
