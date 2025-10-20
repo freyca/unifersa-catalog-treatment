@@ -44,7 +44,7 @@ class OpenAIService implements AIService
         'Un párrafo de entrada con información básica sobre el producto. '.
         'Una ficha técnica resumida en forma de lista. '.
         'Un párrafo final con una llamada a la acción. '.
-        'EL texto no puede exceder los 780 caracteres.';
+        'El texto devuelto, incluyendo el html, NO puede exceder los 950 caracteres, ya que se pasaría del tamaño del campo en la base de datos.';
 
     private string $long_description_prompt = 'Con los datos proporcionados haz una descripción larga del producto que consista exactamente en: '.
         'Una etiqueta "h4" en negrita con el nombre del producto. '.
