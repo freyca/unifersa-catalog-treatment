@@ -83,7 +83,7 @@ class ExportDbToCsv extends Command
 
             $this->csv->toString();
 
-            //$this->uploadExportedFile(config('custom.export_file_names.productos') . '-' . $counter . '.csv');
+            $this->uploadExportedFile(config('custom.export_file_names.productos') . '-' . $counter . '.csv');
 
             $this->info('File succesfylly exported: ' . storage_path('app/' . config('custom.export_file_names.productos') . '-' . $counter . '.csv'));
 
