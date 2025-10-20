@@ -77,10 +77,9 @@ class ExportDbToCsv extends Command
             }
 
             $this->csv = $this->openCsvFileAsWrite($export_file_name);
+            $this->addHeaderToCSV();
 
             foreach ($chunk as $variant) {
-                $this->addHeaderToCSV();
-
                 $progressbar->advance();
 
                 $this->exportVariant($variant);
