@@ -38,7 +38,7 @@ return [
      * Export file name
      */
     'export_file_names' => [
-        'productos' => 'productos-procesados.csv',
+        'productos' => 'productos-procesados',
         'descontinuados' => 'productos-descontinuados.csv',
         'ai_texts' => 'textos-con-ia.csv',
         'variantes' => 'variantes-procesadas.csv',
