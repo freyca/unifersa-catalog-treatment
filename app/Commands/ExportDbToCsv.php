@@ -24,7 +24,7 @@ class ExportDbToCsv extends Command
     protected $signature = 'u:export-db-to-csv
                             {--last : Export only products modified in the last 24 hours}';
 
-    private Writer $csv;
+    protected Writer $csv;
 
     protected array $csv_headers = [
         'codigo_articulo',
@@ -114,7 +114,7 @@ class ExportDbToCsv extends Command
         return Variant::all();
     }
 
-    private function exportVariant(Variant $variant): void
+    protected function exportVariant(Variant $variant): void
     {
         $products = $variant->products();
 
@@ -210,10 +210,8 @@ class ExportDbToCsv extends Command
         }
     }
 
-    private function addHeaderToCSV(): void
+    protected function addHeaderToCSV(): void
     {
         $this->csv->insertOne($this->csv_headers);
     }
-
-    private function exportDbChunk() {}
 }
